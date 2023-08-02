@@ -1,0 +1,27 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orderedsets"
+version = "0.0.1"
+authors = [
+  { name="Matthias Diener", email="matthias.diener@gmail.com" },
+]
+description = "An implementation of ordered sets."
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.7"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/matthiasdiener/orderedsets/"
+"Bug Tracker" = "https://github.com/matthiasdiener/orderedsets/issues"
