@@ -1,7 +1,7 @@
-from collections.abc import Iterator, Set, MutableSet
+from collections.abc import Iterator, MutableSet, Set
 from typing import Any, Dict, Hashable, Iterable, Optional
 
-from immutables import Map
+from frozendict import frozendict
 
 
 class OrderedSet(MutableSet[Hashable]):
@@ -140,11 +140,13 @@ class OrderedSet(MutableSet[Hashable]):
 class FrozenOrderedSet(Set[Hashable]):
     def __init__(self, base: Optional[Iterable[Hashable]] = None) -> None:
         if not base:
-            self._dict: Map[Hashable, None] = Map()
+            self._dict: frozendict[
+                Hashable, None] = frozendict()  # type: ignore[assignment]
         elif isinstance(base, dict):
-            self._dict = Map(base)
+            self._dict = frozendict(base)
         else:
-            self._dict = Map(dict.fromkeys(base))
+            self._dict = \
+                frozendict.fromkeys(base)  # type: ignore[arg-type,assignment]
 
     def __hash__(self) -> int:
         return hash(type(self)) ^ hash(self._dict)
@@ -168,18 +170,18 @@ class FrozenOrderedSet(Set[Hashable]):
 
     def difference(self, s: Iterable[Any]) -> "FrozenOrderedSet":
         return FrozenOrderedSet(
-            Map({e: None for e in self._dict if e not in s}))
+            {e: None for e in self._dict if e not in s})
 
     def intersection(self, s: Iterable[Any]) -> "FrozenOrderedSet":
-        return FrozenOrderedSet(Map({e: None for e in self._dict if e in s}))
+        return FrozenOrderedSet({e: None for e in self._dict if e in s})
 
     def symmetric_difference(self, s: Iterable[Hashable]) -> "FrozenOrderedSet":
         return FrozenOrderedSet(
             dict.fromkeys([e for e in self._dict if e not in s]
-                                + [e for e in s if e not in self._dict]))
+                          + [e for e in s if e not in self._dict]))
 
     def union(self, s: Iterable[Hashable]) -> "FrozenOrderedSet":
-        return FrozenOrderedSet(dict({**self._dict, **dict.fromkeys(s)}))
+        return FrozenOrderedSet({**self._dict, **dict.fromkeys(s)})
 
     def __and__(self, s: Set[Hashable]) -> "FrozenOrderedSet":
         return self.intersection(s)
