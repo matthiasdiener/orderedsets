@@ -1,13 +1,13 @@
-from typing import Generic, Optional, Iterable, Hashable, Any, Dict
-from collections.abc import Set, Iterator
-from frozendict import frozendict
+from collections.abc import Iterator, Set, MutableSet
+from typing import Any, Dict, Hashable, Iterable, Optional
+
+from immutables import Map
 
 
-class OrderedSet(Set[Hashable]):
+class OrderedSet(MutableSet[Hashable]):
     def __init__(self, items: Optional[Iterable[Hashable]] = None) -> None:
-        self._dict: Dict[Hashable, None]
         if not items:
-            self._dict = {}
+            self._dict: Dict[Hashable, None] = {}
         elif isinstance(items, dict):
             self._dict = items
         else:
@@ -32,10 +32,10 @@ class OrderedSet(Set[Hashable]):
     def clear(self) -> None:
         self._dict.clear()
 
-    def copy(self) -> 'OrderedSet':
+    def copy(self) -> "OrderedSet":
         return OrderedSet(self._dict.copy())
 
-    def difference(self, s: Iterable[Any]) -> 'OrderedSet':
+    def difference(self, s: Iterable[Any]) -> "OrderedSet":
         return OrderedSet({e: None for e in self._dict if e not in s})
 
     def difference_update(self, s: Iterable[Any]) -> None:
@@ -45,7 +45,7 @@ class OrderedSet(Set[Hashable]):
         if element in self._dict:
             del self._dict[element]
 
-    def intersection(self, s: Iterable[Any]) -> 'OrderedSet':
+    def intersection(self, s: Iterable[Any]) -> "OrderedSet":
         return OrderedSet({e: None for e in self._dict if e in s})
 
     def intersection_update(self, s: Iterable[Any]) -> None:
@@ -69,15 +69,15 @@ class OrderedSet(Set[Hashable]):
     def remove(self, element: Hashable) -> None:
         del self._dict[element]
 
-    def symmetric_difference(self, s: Iterable[Hashable]) -> 'OrderedSet':
+    def symmetric_difference(self, s: Iterable[Hashable]) -> "OrderedSet":
         return OrderedSet(
-            dict.fromkeys([e for e in self._dict if e not in s] +
-                          [e for e in s if e not in self._dict]))
+            dict.fromkeys([e for e in self._dict if e not in s]
+                          + [e for e in s if e not in self._dict]))
 
     def symmetric_difference_update(self, s: Iterable[Hashable]) -> None:
         self._dict = self.symmetric_difference(s)._dict
 
-    def union(self, s: Iterable[Hashable]) -> 'OrderedSet':
+    def union(self, s: Iterable[Hashable]) -> "OrderedSet":
         return OrderedSet({**self._dict, **dict.fromkeys(s)})
 
     def update(self, s: Iterable[Hashable]) -> None:
@@ -92,34 +92,34 @@ class OrderedSet(Set[Hashable]):
     def __iter__(self) -> Iterator[Hashable]:
         return iter(self._dict)
 
-    def __and__(self, s: Set[Hashable]) -> 'OrderedSet':
+    def __and__(self, s: Set[Hashable]) -> "OrderedSet":
         return self.intersection(s)
 
-    def __iand__(self, s: Set[Hashable]) -> 'OrderedSet':
+    def __iand__(self, s: Set[Hashable]) -> "OrderedSet":
         result = self.intersection(s)
         self._dict = result._dict
         return result
 
-    def __or__(self, s: Set[Hashable]) -> 'OrderedSet':
+    def __or__(self, s: Set[Hashable]) -> "OrderedSet":
         return self.union(s)
 
-    def __ior__(self, s: Set[Hashable]) -> 'OrderedSet':
+    def __ior__(self, s: Set[Hashable]) -> "OrderedSet":
         result = self.union(s)
         self._dict = result._dict
         return result
 
-    def __sub__(self, s: Set[Hashable]) -> 'OrderedSet':
+    def __sub__(self, s: Set[Hashable]) -> "OrderedSet":
         return self.difference(s)
 
-    def __isub__(self, s: Set[Hashable]) -> 'OrderedSet':
+    def __isub__(self, s: Set[Hashable]) -> "OrderedSet":
         result = self.difference(s)
         self._dict = result._dict
         return result
 
-    def __xor__(self, s: Set[Hashable]) -> 'OrderedSet':
+    def __xor__(self, s: Set[Hashable]) -> "OrderedSet":
         return self.symmetric_difference(s)
 
-    def __ixor__(self, s: Set[Hashable]) -> 'OrderedSet':
+    def __ixor__(self, s: Set[Hashable]) -> "OrderedSet":
         result = self.symmetric_difference(s)
         self._dict = result._dict
         return result
@@ -137,91 +137,58 @@ class OrderedSet(Set[Hashable]):
         return set(self) > set(s)
 
 
-class FrozenOrderedSet(OrderedSet):
+class FrozenOrderedSet(Set[Hashable]):
     def __init__(self, base: Optional[Iterable[Hashable]] = None) -> None:
-        super().__init__()
-        self._dict: frozendict[Hashable, None]
         if not base:
-            self._dict = frozendict({})
-        elif isinstance(base, frozendict):
-            self._dict = base
+            self._dict: Map[Hashable, None] = Map()
+        elif isinstance(base, dict):
+            self._dict = Map(base)
         else:
-            self._dict = frozendict.fromkeys(base)
+            self._dict = Map(dict.fromkeys(base))
 
     def __hash__(self) -> int:
-        return type(self) ^ hash(self._dict)
+        return hash(type(self)) ^ hash(self._dict)
 
     def __repr__(self) -> str:
         if len(self) == 0:
             return "FrozenOrderedSet()"
         return "FrozenOrderedSet({" + ", ".join(list(map(str, self._dict))) + "})"
 
-    def add(self, element: Hashable) -> None:
-        raise NotImplementedError('Cannot add to FrozenOrderedSet')
+    def __len__(self) -> int:
+        return len(self._dict)
 
-    def clear(self) -> None:
-        raise NotImplementedError('Cannot clear FrozenOrderedSet')
+    def __contains__(self, o: object) -> bool:
+        return o in self._dict
 
-    def copy(self) -> 'FrozenOrderedSet':
+    def __iter__(self) -> Iterator[Hashable]:
+        return iter(self._dict)
+
+    def copy(self) -> "FrozenOrderedSet":
         return FrozenOrderedSet(self._dict)
 
-    def difference(self, s: Iterable[Any]) -> 'FrozenOrderedSet':
-        return FrozenOrderedSet(frozendict({e: None for e in self._dict if e not in s}))
-
-    def difference_update(self, s: Iterable[Any]) -> None:
-        self._dict = frozendict(
-            {e: None for e in self._dict if e not in s})
-
-    def discard(self, element: Hashable) -> None:
-        raise NotImplementedError('Cannot discard from FrozenOrderedSet')
-
-    def intersection(self, s: Iterable[Any]) -> 'FrozenOrderedSet':
-        return FrozenOrderedSet(frozendict({e: None for e in self._dict if e in s}))
-
-    def intersection_update(self, s: Iterable[Any]) -> None:
-        self._dict = FrozenOrderedSet(frozendict(
-            {e: None for e in self._dict if e in s}))
-
-    def pop(self) -> Hashable:
-        raise NotImplementedError('Cannot pop from FrozenOrderedSet')
-
-    def remove(self, element: Hashable) -> None:
-        raise NotImplementedError('Cannot remove from FrozenOrderedSet')
-
-    def symmetric_difference(self, s: Iterable[Hashable]) -> 'FrozenOrderedSet[T]':
+    def difference(self, s: Iterable[Any]) -> "FrozenOrderedSet":
         return FrozenOrderedSet(
-            frozendict.fromkeys([e for e in self._dict if e not in s] +
-                                [e for e in s if e not in self._dict]))
+            Map({e: None for e in self._dict if e not in s}))
 
-    def symmetric_difference_update(self, s: Iterable[Hashable]) -> None:
-        raise NotImplementedError('Cannot update FrozenOrderedSet')
+    def intersection(self, s: Iterable[Any]) -> "FrozenOrderedSet":
+        return FrozenOrderedSet(Map({e: None for e in self._dict if e in s}))
 
-    def union(self, s: Iterable[Hashable]) -> 'FrozenOrderedSet[T]':
-        return FrozenOrderedSet(frozendict({**self._dict, **dict.fromkeys(s)}))
+    def symmetric_difference(self, s: Iterable[Hashable]) -> "FrozenOrderedSet":
+        return FrozenOrderedSet(
+            dict.fromkeys([e for e in self._dict if e not in s]
+                                + [e for e in s if e not in self._dict]))
 
-    def update(self, s: Iterable[Hashable]) -> None:
-        raise NotImplementedError('Cannot update FrozenOrderedSet')
+    def union(self, s: Iterable[Hashable]) -> "FrozenOrderedSet":
+        return FrozenOrderedSet(dict({**self._dict, **dict.fromkeys(s)}))
 
-    def __and__(self, s: Set[Hashable]) -> 'FrozenOrderedSet[T]':
+    def __and__(self, s: Set[Hashable]) -> "FrozenOrderedSet":
         return self.intersection(s)
 
-    def __iand__(self, s: Set[Hashable]) -> 'FrozenOrderedSet[T]':
-        raise NotImplementedError('Cannot update FrozenOrderedSet')
-
-    def __or__(self, s: Set[Hashable]) -> 'FrozenOrderedSet[Union[T, S]]':
+    def __or__(self, s: Set[Hashable]) -> "FrozenOrderedSet":
         return self.union(s)
 
-    def __ior__(self, s: Set[Hashable]) -> 'FrozenOrderedSet[Union[T, S]]':
-        raise NotImplementedError('Cannot update FrozenOrderedSet')
-
-    def __sub__(self, s: Set[Hashable]) -> 'FrozenOrderedSet[T]':
+    def __sub__(self, s: Set[Hashable]) -> "FrozenOrderedSet":
         return self.difference(s)
 
-    def __isub__(self, s: Set[Hashable]) -> 'FrozenOrderedSet[T]':
-        raise NotImplementedError('Cannot update FrozenOrderedSet')
-
-    def __xor__(self, s: Set[Hashable]) -> 'FrozenOrderedSet[Union[T, S]]':
+    def __xor__(self, s: Set[Hashable]) -> "FrozenOrderedSet":
         return self.symmetric_difference(s)
-
-    def __ixor__(self, s: Set[Hashable]) -> 'FrozenOrderedSet[Union[T, S]]':
-        raise NotImplementedError('Cannot update FrozenOrderedSet')

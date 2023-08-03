@@ -1,35 +1,48 @@
-from orderedsets import OrderedSet
 import pytest
 
+from orderedsets import FrozenOrderedSet, OrderedSet
 
-def test_simple():
-    s = OrderedSet([4, 1, 4, 1])
+pytestmark = pytest.mark.parametrize("_cls",
+                                     [OrderedSet, FrozenOrderedSet,
+                                      set, frozenset])
+
+
+def test_simple(_cls):
+    if _cls in (set, frozenset):
+        pytest.skip()
+    s = _cls([4, 1, 4, 1])
     assert list(s) == [4, 1]
 
 
-def test_str_repr():
+def test_str_repr(_cls):
     s = OrderedSet([4, 1, 4, 1])
     assert repr(s) == str(s) == "{4, 1}"
 
     s = OrderedSet()
     assert repr(s) == str(s) == "OrderedSet()"
 
+    s = FrozenOrderedSet([4, 1, 4, 1])
+    assert repr(s) == str(s) == "FrozenOrderedSet({4, 1})"
 
-def test_len():
-    s = OrderedSet([4, 1, 4, 1])
+    s = FrozenOrderedSet()
+    assert repr(s) == str(s) == "FrozenOrderedSet()"
+
+
+def test_len(_cls):
+    s = _cls([4, 1, 4, 1])
     assert len(s) == 2
 
 
-def test_in():
-    s = OrderedSet([4, 1, 4, 1])
+def test_in(_cls):
+    s = _cls([4, 1, 4, 1])
     assert 4 in s
     assert 2 not in s
 
 
-def test_eq():
-    s = OrderedSet([4, 1, 4, 1])
-    s2 = OrderedSet([4, 4, 1])
-    s3 = set([4, 1, 4, 1])
+def test_eq(_cls):
+    s = _cls([4, 1, 4, 1])
+    s2 = _cls([4, 4, 1])
+    s3 = set([4, 1, 4, 1])  # noqa: C405
     assert s == s2
     assert s == s3
     assert s2 == s
@@ -37,29 +50,35 @@ def test_eq():
     assert s2 == s3 == s
 
 
-def test_isdisjoint():
-    s_1 = OrderedSet([3, 1, 2])
-    s_2 = OrderedSet([1, 7])
+def test_isdisjoint(_cls):
+    s_1 = _cls([3, 1, 2])
+    s_2 = _cls([1, 7])
     assert not s_1.isdisjoint(s_2)
 
-    s_3 = OrderedSet([10, 7])
+    s_3 = _cls([10, 7])
     assert s_1.isdisjoint(s_3)
 
 
-def test_remove_discard():
-    s = OrderedSet([4, 1, 4, 1])
+def test_remove_discard(_cls):
+    if _cls in (frozenset, FrozenOrderedSet):
+        pytest.skip()
+
+    s = _cls([4, 1, 4, 1])
+
     with pytest.raises(KeyError):
         s.remove(17)
     s.discard(17)
 
-    assert s == OrderedSet([4, 1])
+    assert s == _cls([4, 1])
 
     s.remove(4)
 
     assert s == {1}
 
 
-def test_clear():
+def test_clear(_cls):
+    if _cls in (frozenset, FrozenOrderedSet):
+        pytest.skip()
     s = OrderedSet([4, 1, 4, 1])
     s.clear()
 
@@ -67,21 +86,30 @@ def test_clear():
     assert s == OrderedSet()
 
 
-def test_toset():
-    assert {1, 2, 3} == set(OrderedSet([3, 1, 2]))
+def test_toset(_cls):
+    assert {1, 2, 3} == set(_cls([3, 1, 2]))
 
 
-def test_tolist():
-    assert [3, 1, 2] == list(OrderedSet([3, 1, 2]))
+def test_tolist(_cls):
+    if _cls in (set, frozenset):
+        pytest.skip()
+    assert [3, 1, 2] == list(_cls([3, 1, 2]))
 
 
-def test_hash():
+def test_hash(_cls):
     s = OrderedSet([4, 1, 4, 1])
     with pytest.raises(TypeError):
         hash(s)
 
+    s = FrozenOrderedSet([4, 1, 4, 1])
+    s2 = FrozenOrderedSet([4, 1, 4, 1])
+    assert hash(s)
+    assert hash(s) == hash(s)
+    assert s == s2
+    assert hash(s) == hash(s2)
 
-def test_update():
+
+def test_update(_cls):
     s = OrderedSet([1, 6, 8])
 
     assert list(s) == [1, 6, 8]

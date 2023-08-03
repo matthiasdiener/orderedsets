@@ -25,3 +25,9 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/matthiasdiener/orderedsets/"
 "Bug Tracker" = "https://github.com/matthiasdiener/orderedsets/issues"
+
+[tool.flake8]
+ignore = ['W503']
+max-line-length = 85
+count = true
+inline-quotes = "double"
