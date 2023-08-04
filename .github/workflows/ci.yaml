@@ -9,7 +9,6 @@ on:
 
 jobs:
   flake8:
-    name: Flake8
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -23,7 +22,6 @@ jobs:
         python -m flake8 --show-source --statistics "$(basename $GITHUB_REPOSITORY)" test && echo "Flake8 found no errors."
 
   mypy:
-    name: Mypy
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -76,7 +74,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
       fail-fast: false
 
     steps:
@@ -87,7 +85,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Run Pytest
       run: |
-        python -c "import sys; print(sys.version)"
         python -m pip install -U pytest pytest-cov pip setuptools frozendict
         pip install -e .
         cd test
