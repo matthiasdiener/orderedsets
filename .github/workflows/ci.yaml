@@ -7,40 +7,33 @@ on:
   schedule:
   - cron:  '5 0 * * *'
 
-# Cancel in progress CI runs when a new run targeting the same PR or branch/tag is triggered.
-# https://stackoverflow.com/questions/66335225/how-to-cancel-previous-runs-in-the-pr-when-you-push-new-commitsupdate-the-curre
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
-    flake8:
-        name: Flake8
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v3
-        -
-          uses: actions/setup-python@v4
-          with:
-            python-version: '3.8'
-        - name: Flake8 test
-          run: |
-            python -m pip install flake8 pep8-naming flake8-quotes flake8-bugbear flake8-pyproject flake8-isort
-            python -m flake8 --show-source --statistics "$(basename $GITHUB_REPOSITORY)" test && echo "Flake8 found no errors."
+  flake8:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+    - name: Flake8 test
+      run: |
+        python -m pip install flake8 pep8-naming flake8-quotes flake8-bugbear flake8-pyproject flake8-isort
+        python -m flake8 --show-source --statistics "$(basename $GITHUB_REPOSITORY)" test && echo "Flake8 found no errors."
 
-    mypy:
-        name: Mypy
-        runs-on: ubuntu-latest
-        steps:
-        -   uses: actions/checkout@v3
-        -
-            uses: actions/setup-python@v4
-            with:
-                python-version: '3.x'
-        -   name: Run mypy
-            run: |
-                python -m pip install mypy frozendict
-                mypy --strict orderedsets
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    - name: Run mypy
+      run: |
+        python -m pip install -U mypy frozendict pytest
+        mypy --strict orderedsets
+        mypy test
 
     # pylint:
     #     name: Pylint
@@ -77,18 +70,25 @@ jobs:
     #         python -m pip install pydocstyle
     #         python -m pydocstyle "$(basename $GITHUB_REPOSITORY)" && echo "pydocstyle found no errors."
 
-    pytest:
-        name: Pytest
-        runs-on: ubuntu-latest
+  pytest:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+      fail-fast: false
 
-        steps:
-        - uses: actions/checkout@v3
-        - name: Run Pytest
-          run: |
-            python -m pip install -U pytest pytest-cov pip setuptools frozendict
-            pip install -e .
-            cd test
-            python -m pytest --cov=orderedsets --durations=0 --tb=native -rxsw .
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Run Pytest
+      run: |
+        python -m pip install -U pytest pytest-cov pip setuptools frozendict
+        pip install -e .
+        cd test
+        python -m pytest --cov=orderedsets --durations=0 --tb=native -rxsw .
 
     # examples:
     #     name: Examples

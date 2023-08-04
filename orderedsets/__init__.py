@@ -4,7 +4,7 @@ from typing import Any, Dict, Hashable, Iterable, Optional
 from frozendict import frozendict
 
 
-class OrderedSet(MutableSet[Hashable]):
+class OrderedSet(MutableSet):  # type: ignore[type-arg]
     def __init__(self, items: Optional[Iterable[Hashable]] = None) -> None:
         if not items:
             self._dict: Dict[Hashable, None] = {}
@@ -89,55 +89,55 @@ class OrderedSet(MutableSet[Hashable]):
     def __contains__(self, o: object) -> bool:
         return o in self._dict
 
-    def __iter__(self) -> Iterator[Hashable]:
+    def __iter__(self) -> Iterator:  # type: ignore[type-arg]
         return iter(self._dict)
 
-    def __and__(self, s: Set[Hashable]) -> "OrderedSet":
+    def __and__(self, s: Set) -> "OrderedSet":  # type: ignore[type-arg]
         return self.intersection(s)
 
-    def __iand__(self, s: Set[Hashable]) -> "OrderedSet":
+    def __iand__(self, s: Set) -> "OrderedSet":  # type: ignore[type-arg]
         result = self.intersection(s)
         self._dict = result._dict
         return result
 
-    def __or__(self, s: Set[Hashable]) -> "OrderedSet":
+    def __or__(self, s: Set) -> "OrderedSet":  # type: ignore[type-arg]
         return self.union(s)
 
-    def __ior__(self, s: Set[Hashable]) -> "OrderedSet":
+    def __ior__(self, s: Set) -> "OrderedSet":  # type: ignore[type-arg]
         result = self.union(s)
         self._dict = result._dict
         return result
 
-    def __sub__(self, s: Set[Hashable]) -> "OrderedSet":
+    def __sub__(self, s: Set) -> "OrderedSet":  # type: ignore[type-arg]
         return self.difference(s)
 
-    def __isub__(self, s: Set[Hashable]) -> "OrderedSet":
+    def __isub__(self, s: Set) -> "OrderedSet":  # type: ignore[type-arg]
         result = self.difference(s)
         self._dict = result._dict
         return result
 
-    def __xor__(self, s: Set[Hashable]) -> "OrderedSet":
+    def __xor__(self, s: Set) -> "OrderedSet":  # type: ignore[type-arg]
         return self.symmetric_difference(s)
 
-    def __ixor__(self, s: Set[Hashable]) -> "OrderedSet":
+    def __ixor__(self, s: Set) -> "OrderedSet":  # type: ignore[type-arg]
         result = self.symmetric_difference(s)
         self._dict = result._dict
         return result
 
-    def __le__(self, s: Set[Hashable]) -> bool:
+    def __le__(self, s: Set) -> bool:  # type: ignore[type-arg]
         return self.issubset(s)
 
-    def __lt__(self, s: Set[Hashable]) -> bool:
+    def __lt__(self, s: Set) -> bool:  # type: ignore[type-arg]
         return self.issubset(s) and len(self) < len(s)
 
-    def __ge__(self, s: Set[Hashable]) -> bool:
+    def __ge__(self, s: Set) -> bool:  # type: ignore[type-arg]
         return set(self) >= set(s)
 
-    def __gt__(self, s: Set[Hashable]) -> bool:
+    def __gt__(self, s: Set) -> bool:  # type: ignore[type-arg]
         return set(self) > set(s)
 
 
-class FrozenOrderedSet(Set[Hashable]):
+class FrozenOrderedSet(Set):  # type: ignore[type-arg]
     def __init__(self, base: Optional[Iterable[Hashable]] = None) -> None:
         if not base:
             self._dict: frozendict[
@@ -162,7 +162,7 @@ class FrozenOrderedSet(Set[Hashable]):
     def __contains__(self, o: object) -> bool:
         return o in self._dict
 
-    def __iter__(self) -> Iterator[Hashable]:
+    def __iter__(self) -> Iterator:  # type: ignore[type-arg]
         return iter(self._dict)
 
     def copy(self) -> "FrozenOrderedSet":
@@ -183,14 +183,14 @@ class FrozenOrderedSet(Set[Hashable]):
     def union(self, s: Iterable[Hashable]) -> "FrozenOrderedSet":
         return FrozenOrderedSet({**self._dict, **dict.fromkeys(s)})
 
-    def __and__(self, s: Set[Hashable]) -> "FrozenOrderedSet":
+    def __and__(self, s: Set) -> "FrozenOrderedSet":  # type: ignore[type-arg]
         return self.intersection(s)
 
-    def __or__(self, s: Set[Hashable]) -> "FrozenOrderedSet":
+    def __or__(self, s: Set) -> "FrozenOrderedSet":  # type: ignore[type-arg]
         return self.union(s)
 
-    def __sub__(self, s: Set[Hashable]) -> "FrozenOrderedSet":
+    def __sub__(self, s: Set) -> "FrozenOrderedSet":  # type: ignore[type-arg]
         return self.difference(s)
 
-    def __xor__(self, s: Set[Hashable]) -> "FrozenOrderedSet":
+    def __xor__(self, s: Set) -> "FrozenOrderedSet":  # type: ignore[type-arg]
         return self.symmetric_difference(s)
