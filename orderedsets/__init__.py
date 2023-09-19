@@ -141,12 +141,12 @@ class FrozenOrderedSet(Set):  # type: ignore[type-arg]
     def __init__(self, base: Optional[Iterable[Hashable]] = None) -> None:
         if not base:
             self._dict: immutabledict[
-                Hashable, None] = immutabledict()  # type: ignore[assignment]
+                Hashable, None] = immutabledict()
         elif isinstance(base, dict):
             self._dict = immutabledict(base)
         else:
             self._dict = \
-                immutabledict.fromkeys(base)  # type: ignore[arg-type,assignment]
+                immutabledict.fromkeys(base)
 
     def __hash__(self) -> int:
         return hash(type(self)) ^ hash(self._dict)
