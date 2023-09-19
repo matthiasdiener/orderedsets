@@ -1,7 +1,7 @@
 from collections.abc import Iterator, MutableSet, Set
 from typing import Any, Dict, Hashable, Iterable, Optional
 
-from frozendict import frozendict
+from immutabledict import immutabledict
 
 
 class OrderedSet(MutableSet):  # type: ignore[type-arg]
@@ -140,13 +140,13 @@ class OrderedSet(MutableSet):  # type: ignore[type-arg]
 class FrozenOrderedSet(Set):  # type: ignore[type-arg]
     def __init__(self, base: Optional[Iterable[Hashable]] = None) -> None:
         if not base:
-            self._dict: frozendict[
-                Hashable, None] = frozendict()  # type: ignore[assignment]
+            self._dict: immutabledict[
+                Hashable, None] = immutabledict()
         elif isinstance(base, dict):
-            self._dict = frozendict(base)
+            self._dict = immutabledict(base)
         else:
             self._dict = \
-                frozendict.fromkeys(base)  # type: ignore[arg-type,assignment]
+                immutabledict.fromkeys(base)
 
     def __hash__(self) -> int:
         return hash(type(self)) ^ hash(self._dict)

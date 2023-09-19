@@ -12,6 +12,9 @@ authors = [
   { name="Matthias Diener", email="matthias.diener@gmail.com" },
 ]
 description = "An implementation of ordered sets."
+dependencies = [
+    "immutabledict",
+]
 readme = "README.md"
 license = { file="LICENSE" }
 requires-python = ">=3.7"
