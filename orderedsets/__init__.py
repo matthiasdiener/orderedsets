@@ -23,6 +23,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+try:
+    import importlib.metadata as importlib_metadata
+except ModuleNotFoundError:
+    import importlib_metadata  # type: ignore[no-redef]
+
+__version__ = importlib_metadata.version(__package__ or __name__)
+
 from collections.abc import Iterator, MutableSet, Set
 from typing import Any, Dict, Hashable, Iterable, Optional
 
