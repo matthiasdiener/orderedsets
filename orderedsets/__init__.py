@@ -23,6 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from orderedsets.version import VERSION_TEXT
+__version__ = VERSION_TEXT
+
 from collections.abc import Iterator, MutableSet, Set
 from typing import Any, Dict, Hashable, Iterable, Optional
 
