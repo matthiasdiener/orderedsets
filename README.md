@@ -1,5 +1,8 @@
+[![PyPI version](https://badge.fury.io/py/orderedsets.svg)](https://badge.fury.io/py/orderedsets)
+
 # orderedsets
 
+An implementation of mutable and immutable ordered sets.
 
 ## Inspirations
 
