@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "orderedsets"
-dynamic = ["version"]
+version = "2023.0"
 authors = [
   { name="Matthias Diener", email="matthias.diener@gmail.com" },
 ]
@@ -34,6 +34,3 @@ ignore = ['W503']
 max-line-length = 85
 count = true
 inline-quotes = "double"
-
-[tool.setuptools.dynamic]
-version = {attr = "orderedsets.__version__"}
