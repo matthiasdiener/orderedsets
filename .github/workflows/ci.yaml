@@ -72,10 +72,10 @@ jobs:
     #         python -m pydocstyle "$(basename $GITHUB_REPOSITORY)" && echo "pydocstyle found no errors."
 
   pytest:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12-dev"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
       fail-fast: false
 
     steps:
@@ -91,62 +91,19 @@ jobs:
         cd test
         python -m pytest --cov=orderedsets --durations=0 --tb=native -rxsw .
 
-    # examples:
-    #     name: Examples
-    #     runs-on: ${{ matrix.os }}
-    #     strategy:
-    #       matrix:
-    #         os: [ubuntu-latest, porter]
-
-    #     steps:
-    #     - uses: actions/checkout@v3
-    #     - name: Install
-    #       run: |
-    #         . .ci-support/install.sh
-
-    #     - name: Test lazy accuracy
-    #       run: |
-    #         MINIFORGE_INSTALL_DIR=.miniforge3
-    #         . "$MINIFORGE_INSTALL_DIR/bin/activate" testing
-    #         mamba install vtk  # needed for the accuracy comparison
-    #         export XDG_CACHE_HOME=/tmp
-    #         [[ $(hostname) == "porter" ]] && export PYOPENCL_TEST="port:nv" && unset XDG_CACHE_HOME
-    #         # && export POCL_DEBUG=cuda
-    #         scripts/run-integrated-tests.sh --lazy-accuracy
-    #     - name: Run examples
-    #       run: |
-    #         MINIFORGE_INSTALL_DIR=.miniforge3
-    #         . "$MINIFORGE_INSTALL_DIR/bin/activate" testing
-    #         export XDG_CACHE_HOME=/tmp
-    #         [[ $(hostname) == "porter" ]] && export PYOPENCL_TEST="port:nv" && unset XDG_CACHE_HOME
-    #         # && export POCL_DEBUG=cuda
-    #         scripts/run-integrated-tests.sh --examples
-
     # doc:
     #     name: Documentation
     #     runs-on: ubuntu-latest
-
     #     steps:
     #     - uses: actions/checkout@v3
-    #     - name: Install
-    #       run: |
-    #         . .ci-support/install.sh
-
+    #     - name: Set up Python 3.x
+    #       uses: actions/setup-python@v4
+    #       with:
+    #         python-version: '3.x'
     #     - name: Build docs
     #       run: |
     #         set -x
-    #         MINIFORGE_INSTALL_DIR=.miniforge3
-    #         . "$MINIFORGE_INSTALL_DIR/bin/activate" testing
-
-    #         sudo apt-get update
-    #         sudo apt-get install texlive-latex-extra latexmk
-    #         mamba install sphinx graphviz 'docutils>=0.16'
-
-    #         # Work around "Not enough memory to run on this device." errors in CI:
-    #         mamba uninstall pocl
-
     #         pip install sphinx-math-dollar sphinx-copybutton furo
     #         cd doc
     #         make html SPHINXOPTS="-W --keep-going -n"
     #         make latexpdf SPHINXOPTS="-W --keep-going -n"
-
