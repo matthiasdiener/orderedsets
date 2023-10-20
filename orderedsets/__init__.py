@@ -35,8 +35,14 @@ except ModuleNotFoundError:  # pragma: no cover
 
 __version__ = importlib_metadata.version(__package__ or __name__)
 
-from collections.abc import Iterator, MutableSet, Set
+import sys
+from collections.abc import Iterator
 from typing import Any, Dict, Iterable, Optional, TypeVar
+
+if sys.version_info >= (3, 9):
+    from collections.abc import MutableSet, Set
+else:  # pragma: no cover
+    from typing import MutableSet, Set
 
 from immutabledict import immutabledict
 
