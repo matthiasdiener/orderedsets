@@ -1,4 +1,4 @@
-from typing import Any, Type
+from typing import Any
 
 import pytest
 
@@ -16,13 +16,13 @@ all_immutable_set_types = pytest.mark.parametrize("_cls", immutable_set_types)
 
 
 @all_ordered_set_types
-def test_simple(_cls: Type[set[Any]]) -> None:
+def test_simple(_cls: Any) -> None:
     s = _cls([4, 1, 4, 1])
     assert list(s) == [4, 1]
 
 
 @all_ordered_set_types
-def test_str_repr(_cls: Type[set[Any]]) -> None:
+def test_str_repr(_cls: Any) -> None:
     s = _cls([4, 1, 4, 1])
     assert repr(s) == str(s) == f"{_cls.__name__}({{4, 1}})"
 
@@ -31,20 +31,20 @@ def test_str_repr(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_len(_cls: Type[set[Any]]) -> None:
+def test_len(_cls: Any) -> None:
     s = _cls([4, 1, 4, 1])
     assert len(s) == 2
 
 
 @all_set_types
-def test_in(_cls: Type[set[Any]]) -> None:
+def test_in(_cls: Any) -> None:
     s = _cls([4, 1, 4, 1])
     assert 4 in s
     assert 2 not in s
 
 
 @all_set_types
-def test_eq(_cls: Type[set[Any]]) -> None:
+def test_eq(_cls: Any) -> None:
     s1 = _cls([4, 1, 4, 1])
     s2 = _cls([4, 4, 1])
     s3 = set([4, 1, 4, 1])  # noqa: C405
@@ -57,13 +57,13 @@ def test_eq(_cls: Type[set[Any]]) -> None:
     s4 = _cls([4])
     assert s1 != s4
 
-    assert s1 != [4, 1]  # type: ignore[comparison-overlap]
+    assert s1 != [4, 1]
     if _cls in ordered_set_types:
         assert [4, 1] == list(s1)
 
 
 @all_set_types
-def test_isdisjoint(_cls: Type[set[Any]]) -> None:
+def test_isdisjoint(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert not s1.isdisjoint(s2)
@@ -73,7 +73,7 @@ def test_isdisjoint(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_remove_discard(_cls: Type[set[Any]]) -> None:
+def test_remove_discard(_cls: Any) -> None:
     s = _cls([4, 1, 4, 1])
 
     if _cls in immutable_set_types:
@@ -95,7 +95,7 @@ def test_remove_discard(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_clear(_cls: Type[set[Any]]) -> None:
+def test_clear(_cls: Any) -> None:
     s = _cls([4, 1, 4, 1])
 
     if _cls in immutable_set_types:
@@ -110,17 +110,17 @@ def test_clear(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_toset(_cls: Type[set[Any]]) -> None:
+def test_toset(_cls: Any) -> None:
     assert {1, 2, 3} == set(_cls([3, 1, 2]))
 
 
 @all_ordered_set_types
-def test_tolist(_cls: Type[set[Any]]) -> None:
+def test_tolist(_cls: Any) -> None:
     assert [3, 1, 2] == list(_cls([3, 1, 2]))
 
 
 @all_set_types
-def test_hash(_cls: Type[set[Any]]) -> None:
+def test_hash(_cls: Any) -> None:
     s1 = _cls([4, 1, 4, 1])
 
     if _cls in mutable_set_types:
@@ -140,7 +140,7 @@ def test_hash(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_update(_cls: Type[set[Any]]) -> None:
+def test_update(_cls: Any) -> None:
     s = _cls([1, 6, 8])
 
     if _cls in immutable_set_types:
@@ -163,7 +163,7 @@ def test_update(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_intersection(_cls: Type[set[Any]]) -> None:
+def test_intersection(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert _cls([1]) == s1.intersection(s2)
@@ -171,7 +171,7 @@ def test_intersection(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_intersection_update(_cls: Type[set[Any]]) -> None:
+def test_intersection_update(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
 
@@ -184,7 +184,7 @@ def test_intersection_update(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_add(_cls: Type[set[Any]]) -> None:
+def test_add(_cls: Any) -> None:
     s = _cls([3, 1, 2])
     if _cls in immutable_set_types:
         with pytest.raises(AttributeError):
@@ -195,7 +195,7 @@ def test_add(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_copy(_cls: Type[set[Any]]) -> None:
+def test_copy(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = s1.copy()
     assert s1 == s2
@@ -205,7 +205,7 @@ def test_copy(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_difference(_cls: Type[set[Any]]) -> None:
+def test_difference(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert _cls([3, 2]) == s1.difference(s2)
@@ -213,7 +213,7 @@ def test_difference(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_difference_update(_cls: Type[set[Any]]) -> None:
+def test_difference_update(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     if _cls in immutable_set_types:
@@ -225,14 +225,14 @@ def test_difference_update(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_symmetric_difference(_cls: Type[set[Any]]) -> None:
+def test_symmetric_difference(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert _cls([3, 2, 7]) == s1.symmetric_difference(s2)
 
 
 @all_set_types
-def test_symmetric_difference_update(_cls: Type[set[Any]]) -> None:
+def test_symmetric_difference_update(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     if _cls in immutable_set_types:
@@ -244,7 +244,7 @@ def test_symmetric_difference_update(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_and(_cls: Type[set[Any]]) -> None:
+def test_op_and(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     s3 = _cls([42])
@@ -253,7 +253,7 @@ def test_op_and(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_iand(_cls: Type[set[Any]]) -> None:
+def test_op_iand(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     s3 = _cls([42])
@@ -264,7 +264,7 @@ def test_op_iand(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_or(_cls: Type[set[Any]]) -> None:
+def test_op_or(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     s3 = _cls([42])
@@ -273,7 +273,7 @@ def test_op_or(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_ior(_cls: Type[set[Any]]) -> None:
+def test_op_ior(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     s3 = _cls([42])
@@ -286,7 +286,7 @@ def test_op_ior(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_sub(_cls: Type[set[Any]]) -> None:
+def test_op_sub(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     s3 = _cls([42])
@@ -295,7 +295,7 @@ def test_op_sub(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_isub(_cls: Type[set[Any]]) -> None:
+def test_op_isub(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     s3 = _cls([42])
@@ -308,7 +308,7 @@ def test_op_isub(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_xor(_cls: Type[set[Any]]) -> None:
+def test_op_xor(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     s3 = _cls([42])
@@ -317,7 +317,7 @@ def test_op_xor(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_ixor(_cls: Type[set[Any]]) -> None:
+def test_op_ixor(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     s3 = _cls([42])
@@ -330,7 +330,7 @@ def test_op_ixor(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_issubset(_cls: Type[set[Any]]) -> None:
+def test_issubset(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert not s2.issubset(s1)
@@ -342,7 +342,7 @@ def test_issubset(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_issuperset(_cls: Type[set[Any]]) -> None:
+def test_issuperset(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert not s1.issuperset(s2)
@@ -354,7 +354,7 @@ def test_issuperset(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_pop(_cls: Type[set[Any]]) -> None:
+def test_pop(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     if _cls in immutable_set_types:
         with pytest.raises(AttributeError):
@@ -369,7 +369,7 @@ def test_pop(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_le(_cls: Type[set[Any]]) -> None:
+def test_op_le(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert not (s2 <= s1)
@@ -379,7 +379,7 @@ def test_op_le(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_lt(_cls: Type[set[Any]]) -> None:
+def test_op_lt(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert not (s2 < s1)
@@ -389,7 +389,7 @@ def test_op_lt(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_ge(_cls: Type[set[Any]]) -> None:
+def test_op_ge(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert not (s2 >= s1)
@@ -399,7 +399,7 @@ def test_op_ge(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_op_gt(_cls: Type[set[Any]]) -> None:
+def test_op_gt(_cls: Any) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert not (s2 > s1)
@@ -409,7 +409,7 @@ def test_op_gt(_cls: Type[set[Any]]) -> None:
 
 
 @all_set_types
-def test_bool(_cls: Type[set[Any]]) -> None:
+def test_bool(_cls: Any) -> None:
     assert not _cls()
     assert _cls([1])
     assert not bool(_cls())
