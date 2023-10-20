@@ -18,6 +18,24 @@ the set as well as mutating operations are deterministic.
 This package requires the [immutabledict](https://github.com/corenting/immutabledict)
 package for the immutable set class, but has no other external dependencies.
 
+
+## Usage
+
+```
+$ pip install orderedsets
+```
+
+```python
+from orderedsets import OrderedSet, FrozenOrderedSet
+os = OrderedSet([1, 2, 4])
+os.add(0)
+assert list(os) == [1, 2, 4, 0]
+
+fos = FrozenOrderedSet([1, 2, 4])
+# a.add(0)  # raises AttributeError: 'FrozenOrderedSet' object has no attribute 'add'
+assert list(fos) == [1, 2, 4]
+```
+
 ## Inspirations
 
 ### Packages
