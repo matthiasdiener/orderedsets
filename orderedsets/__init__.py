@@ -35,21 +35,15 @@ except ModuleNotFoundError:  # pragma: no cover
 
 __version__ = importlib_metadata.version(__package__ or __name__)
 
-import sys
-from collections.abc import Iterator
-from typing import Any, Dict, Iterable, Optional, TypeVar
-
-if sys.version_info >= (3, 9):
-    from collections.abc import MutableSet, Set
-else:  # pragma: no cover
-    from typing import MutableSet, Set
+from collections.abc import Iterator, Set
+from typing import AbstractSet, Any, Dict, Iterable, Optional, TypeVar
 
 from immutabledict import immutabledict
 
 T = TypeVar("T")
 
 
-class OrderedSet(MutableSet[T]):
+class OrderedSet(AbstractSet[T]):
     def __init__(self, items: Optional[Iterable[T]] = None) -> None:
         if not items:
             self._dict: Dict[T, None] = {}
@@ -179,7 +173,7 @@ class OrderedSet(MutableSet[T]):
         return set(self) > set(s)
 
 
-class FrozenOrderedSet(Set[T]):
+class FrozenOrderedSet(AbstractSet[T]):
     def __init__(self, base: Optional[Iterable[T]] = None) -> None:
         if not base:
             self._dict: immutabledict[T, None] = immutabledict()
