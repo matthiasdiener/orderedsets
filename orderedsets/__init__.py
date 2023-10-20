@@ -181,7 +181,7 @@ class FrozenOrderedSet(Set):  # type: ignore[type-arg]
                 immutabledict.fromkeys(base)
 
     def __hash__(self) -> int:
-        return hash(type(self)) ^ hash(self._dict)
+        return hash(frozenset(self))
 
     def __repr__(self) -> str:
         if len(self) == 0:
