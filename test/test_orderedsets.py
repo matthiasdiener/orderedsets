@@ -414,3 +414,44 @@ def test_bool(_cls: Any) -> None:
     assert _cls([1])
     assert not bool(_cls())
     assert bool(_cls([1]))
+
+
+@all_set_types
+def test_ordering(_cls: Any) -> None:
+    # Based on https://github.com/simonpercivall/orderedset/pull/22
+    lst = list(range(10))
+
+    oset1 = _cls(lst)
+    oset2 = _cls(lst)
+
+    assert oset2 <= oset1
+    assert oset2 <= set(oset1)
+    # assert oset2 <= list(oset1)
+    assert oset1 >= oset2
+    assert oset1 >= set(oset2)
+    # assert oset1 >= list(oset2)
+
+    oset3 = _cls(lst[:-1])
+
+    assert oset3 < oset1
+    assert oset3 < set(oset1)
+    # assert oset3 < list(oset1)
+
+    assert oset1 > oset3
+    assert oset1 > set(oset3)
+    # assert oset1 > list(oset3)
+
+    oset4 = _cls(lst[1:])
+
+    assert not (oset3 < oset4)
+    assert not (oset3 < set(oset4))
+    # assert not (oset3 < list(oset4))
+    assert not (oset3 >= oset4)
+    assert not (oset3 >= set(oset4))
+    # assert not (oset3 >= list(oset4))
+    assert not (oset3 < oset4)
+    assert not (oset3 < set(oset4))
+    # assert not (oset3 < list(oset4))
+    assert not (oset3 >= oset4)
+    assert not (oset3 >= set(oset4))
+    # assert not (oset3 >= list(oset4))
