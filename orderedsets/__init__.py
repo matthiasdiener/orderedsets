@@ -53,9 +53,9 @@ class OrderedSet(AbstractSet[T]):
             self._dict = dict.fromkeys(items)
 
     def __eq__(self, other: object) -> bool:
-        if isinstance(other, Set):
-            return set(self) == set(other)
-        return False
+        return (isinstance(other, Set)
+                and len(self) == len(other)
+                and all(i in other for i in self))
 
     def __repr__(self) -> str:
         if len(self) == 0:
@@ -91,7 +91,7 @@ class OrderedSet(AbstractSet[T]):
         return self._dict.keys().isdisjoint(s)
 
     def issubset(self, s: Iterable[Any]) -> bool:
-        return set(self).issubset(set(s))
+        return all(i in s for i in self)
 
     def issuperset(self, s: Iterable[Any]) -> bool:
         return set(self).issuperset(set(s))
@@ -164,13 +164,13 @@ class OrderedSet(AbstractSet[T]):
         return self.issubset(s)
 
     def __lt__(self, s: Set[T]) -> bool:
-        return self.issubset(s) and len(self) < len(s)
+        return len(self) < len(s) and self.issubset(s)
 
     def __ge__(self, s: Set[T]) -> bool:
         return set(self) >= set(s)
 
     def __gt__(self, s: Set[T]) -> bool:
-        return set(self) > set(s)
+        return len(self) > len(s) and set(self) > set(s)
 
 
 class FrozenOrderedSet(AbstractSet[T]):
