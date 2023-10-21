@@ -7,24 +7,27 @@
 
 An implementation of mutable and immutable ordered sets as thin wrappers around
 Python's `dict` class for the `OrderedSet` class, and
-[immutabledict](https://github.com/corenting/immutabledict) for the `FrozenOrderedSet` class.
+[`immutabledict`](https://github.com/corenting/immutabledict) for the `FrozenOrderedSet` class.
 These classes are meant as drop-in replacements for Python's builtin `set` and
-`frozenset` classes.
+`frozenset` classes. Care has been taken to provide the same functionality as the Python classes,
+without API additions or removals, to allow easy switching between set implementations. 
 
 In contrast to Python's builtin `set` and `frozenset` classes, the order of
 items is kept (generally, insertion order), such that iterating over items in
 the set as well as mutating operations are deterministic.
 
-This package requires the [immutabledict](https://github.com/corenting/immutabledict)
+This package requires the [`immutabledict`](https://github.com/corenting/immutabledict)
 package for the immutable set class, but has no other external dependencies.
 
 
 ## Usage
 
+Install this package with:
 ```
 $ pip install orderedsets
 ```
 
+Usage example:
 ```python
 from orderedsets import OrderedSet, FrozenOrderedSet
 os = OrderedSet([1, 2, 4])
@@ -36,9 +39,9 @@ fos = FrozenOrderedSet([1, 2, 4])
 assert list(fos) == [1, 2, 4]
 ```
 
-## Inspirations
+## References
 
-### Packages
+### Other packages
 
 - https://github.com/rindPHI/proxyorderedset/ (not 100% compatible with set)
 - https://pypi.org/project/ordered-set/ (no frozen/immutable class)
@@ -49,6 +52,3 @@ assert list(fos) == [1, 2, 4]
 ### Discussions
 
 - https://discuss.python.org/t/add-orderedset-to-stdlib/12730
-
-
-## TODOs
