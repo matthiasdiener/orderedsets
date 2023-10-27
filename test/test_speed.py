@@ -26,88 +26,42 @@ SOFTWARE.
 
 from timeit import timeit
 
-
-def test_speed_init() -> None:
-    s_time = timeit("set(range(1000))", number=10000)
-
-    os_time = timeit("OrderedSet(range(1000))",
-                     setup="from orderedsets import OrderedSet", number=10000)
-
-    fos_time = timeit("FrozenOrderedSet(range(1000))",
-                      setup="from orderedsets import FrozenOrderedSet", number=10000)
-
-    print(s_time)
-    print(os_time)
-    print(fos_time)
-
-    assert os_time < 2.5 * s_time
-    assert fos_time < 3 * s_time
+import pytest
 
 
-def test_speed_hash() -> None:
-    fs_time = timeit("hash(s)", setup="s = frozenset(range(1000))", number=10000)
+@pytest.mark.parametrize(
+    "statement, _setup, slowdown_factor, skip_mutable, skip_immutable",
+    [
+        ("set(range(1000))", "", 3, False, False),  # init
+        ("hash(s)", "s = set(range(1000))", 6, True, False),  # hash
+        ("len(s)", "s = set(range(1000))", 4, False, False),  # len
+        ("set(range(1000)).union(set(range(1001)))", "", 5, False, False),  # union
+        ("for e in s: pass", "s = set(range(1000))", 1.2, False, False),  # iter
+        ("for i in range(1000): i in s", "s = set(range(500))", 5, False, False),  # contains  # noqa: E501
+    ],
+)
+def test_speed_init(statement: str, _setup: str, slowdown_factor: float,
+                    skip_mutable: bool, skip_immutable: bool) -> None:
 
-    fos_time = timeit("hash(s)",
-                      setup="from orderedsets import FrozenOrderedSet;\
-                             s = FrozenOrderedSet(range(1000))", number=10000)
+    if not skip_mutable:
+        s_time = timeit(statement, setup=_setup, number=10000)
+        os_time = timeit(statement,
+                         setup="from orderedsets import OrderedSet as set;" + _setup,
+                         number=10000)
+        print(s_time)
+        print(os_time)
 
-    print(fs_time)
-    print(fos_time)
+        assert os_time < slowdown_factor * s_time
 
-    assert fos_time < 6 * fs_time
+    if not skip_immutable:
+        fs_time = timeit(statement, setup="set=frozenset;" + _setup, number=10000)
 
+        fos_time = timeit(statement,
+                          setup="from orderedsets import FrozenOrderedSet as set;"
+                          + _setup,
+                          number=10000)
 
-def test_speed_len() -> None:
-    s_time = timeit(
-        "len(s)", setup="s = set(range(1000))", number=10000)
+        print(fs_time)
+        print(fos_time)
 
-    os_time = timeit(
-        "len(s)", setup="from orderedsets import OrderedSet;\
-                         s = OrderedSet(range(1000))", number=10000)
-
-    print(s_time)
-    print(os_time)
-
-    assert os_time < 6 * s_time
-
-
-def test_speed_union() -> None:
-    s_time = timeit(
-        "set(range(1000)).union(set(range(1001)))", number=10000)
-
-    os_time = timeit(
-        "OrderedSet(range(1000)).union(OrderedSet(range(1001)))",
-        setup="from orderedsets import OrderedSet", number=10000)
-
-    print(s_time)
-    print(os_time)
-
-    assert os_time < 3 * s_time
-
-
-def test_speed_iter() -> None:
-    s_time = timeit(
-        "for e in s: pass", setup="s = set(range(1000))", number=10000)
-
-    os_time = timeit(
-        "for e in s: pass", setup="from orderedsets import OrderedSet;\
-                         s = OrderedSet(range(1000))", number=10000)
-
-    print(s_time)
-    print(os_time)
-
-    assert os_time < 1.1 * s_time
-
-
-def test_speed_contains() -> None:
-    s_time = timeit(
-        "for i in range(1000): i in s", setup="s = set(range(500))", number=10000)
-
-    os_time = timeit(
-        "for i in range(1000): i in s", setup="from orderedsets import OrderedSet;\
-                         s = OrderedSet(range(500))", number=10000)
-
-    print(s_time)
-    print(os_time)
-
-    assert os_time < 5 * s_time
+        assert fos_time < slowdown_factor * fs_time

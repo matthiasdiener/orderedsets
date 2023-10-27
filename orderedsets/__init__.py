@@ -181,6 +181,7 @@ class FrozenOrderedSet(Set):  # type: ignore[type-arg]
                 immutabledict.fromkeys(base)
 
         self._my_hash: Optional[int] = None
+        self._len: Optional[int] = None
 
     def __hash__(self) -> int:
         if self._my_hash:
@@ -195,7 +196,11 @@ class FrozenOrderedSet(Set):  # type: ignore[type-arg]
         return "FrozenOrderedSet({" + ", ".join(list(map(str, self._dict))) + "})"
 
     def __len__(self) -> int:
-        return len(self._dict)
+        if self._len:
+            return self._len
+
+        self._len = len(self._dict)
+        return self._len
 
     def __contains__(self, o: object) -> bool:
         return o in self._dict
