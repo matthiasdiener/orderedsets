@@ -25,26 +25,61 @@ SOFTWARE.
 
 
 from timeit import timeit
-from orderedsets import FrozenOrderedSet, OrderedSet
 
 
 def test_speed_init():
-    fz_time = timeit("frozenset(range(1000))", setup="s = ", number=10000)
+    s_time = timeit("set(range(1000))", number=10000)
 
-    fos_time = timeit("FrozenOrderedSet(range(1000))", setup="from orderedsets import FrozenOrderedSet; s = ", number=10000)
+    os_time = timeit("OrderedSet(range(1000))",
+                     setup="from orderedsets import OrderedSet", number=10000)
 
-    print(fz_time)
+    fos_time = timeit("FrozenOrderedSet(range(1000))",
+                      setup="from orderedsets import FrozenOrderedSet", number=10000)
+
+    print(s_time)
+    print(os_time)
     print(fos_time)
+
+    assert os_time < 2.1 * s_time
+    assert fos_time < 2.6 * s_time
 
 
 def test_speed_hash():
-    # setup =
+    fs_time = timeit("hash(s)", setup="s = frozenset(range(1000))", number=10000)
 
-    fz_time = timeit("hash(s)", setup="s = frozenset(range(1000))", number=10000)
+    fos_time = timeit("hash(s)",
+                      setup="from orderedsets import FrozenOrderedSet;\
+                             s = FrozenOrderedSet(range(1000))", number=10000)
 
-    fos_time = timeit("hash(s)", setup="from orderedsets import FrozenOrderedSet; s = FrozenOrderedSet(range(1000))", number=10000)
-
-
-
-    print(fz_time)
+    print(fs_time)
     print(fos_time)
+
+    assert fos_time < 5 * fs_time
+
+
+def test_speed_len():
+    fs_time = timeit(
+        "len(s)", setup="s = set(range(1000))", number=10000)
+
+    fos_time = timeit(
+        "len(s)", setup="from orderedsets import OrderedSet;\
+                         s = OrderedSet(range(1000))", number=10000)
+
+    print(fs_time)
+    print(fos_time)
+
+    assert fos_time < 5 * fs_time
+
+
+def test_speed_union():
+    fs_time = timeit(
+        "set(range(1000)).union(set(range(1001)))", number=10000)
+
+    fos_time = timeit(
+        "OrderedSet(range(1000)).union(OrderedSet(range(1001)))",
+        setup="from orderedsets import OrderedSet", number=10000)
+
+    print(fs_time)
+    print(fos_time)
+
+    assert fos_time < 3 * fs_time
