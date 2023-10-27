@@ -180,14 +180,14 @@ class FrozenOrderedSet(Set):  # type: ignore[type-arg]
             self._dict = \
                 immutabledict.fromkeys(base)
 
-        self._hash = None
+        self._my_hash: Optional[int] = None
 
     def __hash__(self) -> int:
-        if self._hash:
-            return self._hash
+        if self._my_hash:
+            return self._my_hash
 
-        self._hash = hash(frozenset(self))
-        return self._hash
+        self._my_hash = hash(frozenset(self))
+        return self._my_hash
 
     def __repr__(self) -> str:
         if len(self) == 0:

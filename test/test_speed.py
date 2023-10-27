@@ -27,7 +27,7 @@ SOFTWARE.
 from timeit import timeit
 
 
-def test_speed_init():
+def test_speed_init() -> None:
     s_time = timeit("set(range(1000))", number=10000)
 
     os_time = timeit("OrderedSet(range(1000))",
@@ -44,7 +44,7 @@ def test_speed_init():
     assert fos_time < 2.6 * s_time
 
 
-def test_speed_hash():
+def test_speed_hash() -> None:
     fs_time = timeit("hash(s)", setup="s = frozenset(range(1000))", number=10000)
 
     fos_time = timeit("hash(s)",
@@ -57,7 +57,7 @@ def test_speed_hash():
     assert fos_time < 5 * fs_time
 
 
-def test_speed_len():
+def test_speed_len() -> None:
     fs_time = timeit(
         "len(s)", setup="s = set(range(1000))", number=10000)
 
@@ -71,7 +71,7 @@ def test_speed_len():
     assert fos_time < 5 * fs_time
 
 
-def test_speed_union():
+def test_speed_union() -> None:
     fs_time = timeit(
         "set(range(1000)).union(set(range(1001)))", number=10000)
 
