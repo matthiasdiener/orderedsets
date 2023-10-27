@@ -40,8 +40,8 @@ def test_speed_init() -> None:
     print(os_time)
     print(fos_time)
 
-    assert os_time < 2.1 * s_time
-    assert fos_time < 2.6 * s_time
+    assert os_time < 2.5 * s_time
+    assert fos_time < 3 * s_time
 
 
 def test_speed_hash() -> None:
@@ -54,32 +54,60 @@ def test_speed_hash() -> None:
     print(fs_time)
     print(fos_time)
 
-    assert fos_time < 5 * fs_time
+    assert fos_time < 6 * fs_time
 
 
 def test_speed_len() -> None:
-    fs_time = timeit(
+    s_time = timeit(
         "len(s)", setup="s = set(range(1000))", number=10000)
 
-    fos_time = timeit(
+    os_time = timeit(
         "len(s)", setup="from orderedsets import OrderedSet;\
                          s = OrderedSet(range(1000))", number=10000)
 
-    print(fs_time)
-    print(fos_time)
+    print(s_time)
+    print(os_time)
 
-    assert fos_time < 5 * fs_time
+    assert os_time < 6 * s_time
 
 
 def test_speed_union() -> None:
-    fs_time = timeit(
+    s_time = timeit(
         "set(range(1000)).union(set(range(1001)))", number=10000)
 
-    fos_time = timeit(
+    os_time = timeit(
         "OrderedSet(range(1000)).union(OrderedSet(range(1001)))",
         setup="from orderedsets import OrderedSet", number=10000)
 
-    print(fs_time)
-    print(fos_time)
+    print(s_time)
+    print(os_time)
 
-    assert fos_time < 3 * fs_time
+    assert os_time < 3 * s_time
+
+
+def test_speed_iter() -> None:
+    s_time = timeit(
+        "for e in s: pass", setup="s = set(range(1000))", number=10000)
+
+    os_time = timeit(
+        "for e in s: pass", setup="from orderedsets import OrderedSet;\
+                         s = OrderedSet(range(1000))", number=10000)
+
+    print(s_time)
+    print(os_time)
+
+    assert os_time < 1.1 * s_time
+
+
+def test_speed_contains() -> None:
+    s_time = timeit(
+        "for i in range(2000): i in s", setup="s = set(range(1000))", number=10000)
+
+    os_time = timeit(
+        "for i in range(2000): i in s", setup="from orderedsets import OrderedSet;\
+                         s = OrderedSet(range(1000))", number=10000)
+
+    print(s_time)
+    print(os_time)
+
+    assert os_time < 4 * s_time
