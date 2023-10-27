@@ -25,6 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import sys
+
 try:
     import importlib.metadata as importlib_metadata
 except ModuleNotFoundError:  # pragma: no cover
@@ -180,8 +182,14 @@ class FrozenOrderedSet(Set):  # type: ignore[type-arg]
             self._dict = \
                 immutabledict.fromkeys(base)
 
-    def __hash__(self) -> int:
-        return hash(type(self)) ^ hash(self._dict)
+    if sys.version_info >= (3, 9):  # pragma: no cover
+        # See
+        # https://github.com/python/cpython/blob/4a1026077af65b308c98cdfe181b5f94c46fb48a/Lib/_collections_abc.py#L665
+        # for why we are using this hash implementation.
+        __hash__ = Set._hash
+    else:  # pragma: no cover
+        def __hash__(self) -> int:
+            return hash(frozenset(self._dict))
 
     def __repr__(self) -> str:
         if len(self) == 0:

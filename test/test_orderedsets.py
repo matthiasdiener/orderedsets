@@ -139,6 +139,14 @@ def test_hash(_cls: Any) -> None:
         assert hash(s1) != hash(s3)
 
 
+def test_hash_value() -> None:
+    fos = FrozenOrderedSet([1, 2, 3])
+    fs = frozenset([1, 2, 3])
+
+    assert fs == fos
+    assert hash(fs) == hash(fos)
+
+
 @all_set_types
 def test_update(_cls: Any) -> None:
     s = _cls([1, 6, 8])
