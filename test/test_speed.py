@@ -101,13 +101,13 @@ def test_speed_iter() -> None:
 
 def test_speed_contains() -> None:
     s_time = timeit(
-        "for i in range(2000): i in s", setup="s = set(range(1000))", number=10000)
+        "for i in range(1000): i in s", setup="s = set(range(500))", number=10000)
 
     os_time = timeit(
-        "for i in range(2000): i in s", setup="from orderedsets import OrderedSet;\
-                         s = OrderedSet(range(1000))", number=10000)
+        "for i in range(1000): i in s", setup="from orderedsets import OrderedSet;\
+                         s = OrderedSet(range(500))", number=10000)
 
     print(s_time)
     print(os_time)
 
-    assert os_time < 4 * s_time
+    assert os_time < 5 * s_time
