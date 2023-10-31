@@ -71,29 +71,29 @@ class OrderedSet(AbstractSet[T]):
     def copy(self) -> OrderedSet[T]:
         return OrderedSet(self._dict.copy())
 
-    def difference(self, s: Iterable[Any]) -> OrderedSet[T]:
+    def difference(self, s: Iterable[T]) -> OrderedSet[T]:
         return OrderedSet({e: None for e in self._dict if e not in s})
 
-    def difference_update(self, s: Iterable[Any]) -> None:
+    def difference_update(self, s: Iterable[T]) -> None:
         self._dict = {e: None for e in self._dict if e not in s}
 
     def discard(self, element: T) -> None:
         if element in self._dict:
             del self._dict[element]
 
-    def intersection(self, s: Iterable[Any]) -> OrderedSet[T]:
+    def intersection(self, s: Iterable[T]) -> OrderedSet[T]:
         return OrderedSet({e: None for e in self._dict if e in s})
 
-    def intersection_update(self, s: Iterable[Any]) -> None:
+    def intersection_update(self, s: Iterable[T]) -> None:
         self._dict = {e: None for e in self._dict if e in s}
 
-    def isdisjoint(self, s: Iterable[Any]) -> bool:
+    def isdisjoint(self, s: Iterable[T]) -> bool:
         return self._dict.keys().isdisjoint(s)
 
-    def issubset(self, s: Iterable[Any]) -> bool:
+    def issubset(self, s: Iterable[T]) -> bool:
         return all(i in s for i in self)
 
-    def issuperset(self, s: Iterable[Any]) -> bool:
+    def issuperset(self, s: Iterable[T]) -> bool:
         return set(self).issuperset(set(s))
 
     def pop(self) -> T:
@@ -209,11 +209,11 @@ class FrozenOrderedSet(AbstractSet[T]):
     def copy(self) -> FrozenOrderedSet[T]:
         return FrozenOrderedSet(self._dict)
 
-    def difference(self, s: Iterable[Any]) -> FrozenOrderedSet[T]:
+    def difference(self, s: Iterable[T]) -> FrozenOrderedSet[T]:
         return FrozenOrderedSet(
             {e: None for e in self._dict if e not in s})
 
-    def intersection(self, s: Iterable[Any]) -> FrozenOrderedSet[T]:
+    def intersection(self, s: Iterable[T]) -> FrozenOrderedSet[T]:
         return FrozenOrderedSet({e: None for e in self._dict if e in s})
 
     def symmetric_difference(self, s: Iterable[T]) -> FrozenOrderedSet[T]:
@@ -221,13 +221,13 @@ class FrozenOrderedSet(AbstractSet[T]):
             dict.fromkeys([e for e in self._dict if e not in s]
                           + [e for e in s if e not in self._dict]))
 
-    def isdisjoint(self, s: Iterable[Any]) -> bool:
+    def isdisjoint(self, s: Iterable[T]) -> bool:
         return self._dict.keys().isdisjoint(s)
 
-    def issubset(self, s: Iterable[Any]) -> bool:
+    def issubset(self, s: Iterable[T]) -> bool:
         return all(i in s for i in self)
 
-    def issuperset(self, s: Iterable[Any]) -> bool:
+    def issuperset(self, s: Iterable[T]) -> bool:
         return set(self).issuperset(set(s))
 
     def union(self, s: Iterable[T]) -> FrozenOrderedSet[T]:
