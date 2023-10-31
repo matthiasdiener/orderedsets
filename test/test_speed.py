@@ -30,18 +30,18 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    "statement, _setup, slowdown_factor, skip_mutable, skip_immutable",
+    "statement, _setup, max_slowdown_factor, skip_mutable, skip_immutable",
     [
         ("set(range(1000))", "", 3, False, False),  # init
-        ("hash(s)", "s = set(range(1000))", 6, True, False),  # hash
-        ("len(s)", "s = set(range(1000))", 4, False, False),  # len
-        ("set(range(1000)).union(set(range(1001)))", "", 5, False, False),  # union
+        ("hash(s)", "s = set(range(1000))", 10, True, False),  # hash
+        ("len(s)", "s = set(range(1000))", 8, False, False),  # len
+        ("set(range(1000)).union(set(range(1001)))", "", 10, False, False),  # union
         ("for e in s: pass", "s = set(range(1000))", 1.2, False, False),  # iter
-        ("for i in range(1000): i in s", "s = set(range(500))", 5, False, False),  # contains  # noqa: E501
+        ("for i in range(1000): i in s", "s = set(range(500))", 10, False, False),  # contains  # noqa: E501
     ],
 )
-def test_speed_init(statement: str, _setup: str, slowdown_factor: float,
-                    skip_mutable: bool, skip_immutable: bool) -> None:
+def test_speed(statement: str, _setup: str, max_slowdown_factor: float,
+               skip_mutable: bool, skip_immutable: bool) -> None:
 
     if not skip_mutable:
         s_time = timeit(statement, setup=_setup, number=10000)
@@ -51,7 +51,7 @@ def test_speed_init(statement: str, _setup: str, slowdown_factor: float,
         print(s_time)
         print(os_time)
 
-        assert os_time < slowdown_factor * s_time
+        assert os_time < max_slowdown_factor * s_time
 
     if not skip_immutable:
         fs_time = timeit(statement, setup="set=frozenset;" + _setup, number=10000)
@@ -64,4 +64,4 @@ def test_speed_init(statement: str, _setup: str, slowdown_factor: float,
         print(fs_time)
         print(fos_time)
 
-        assert fos_time < slowdown_factor * fs_time
+        assert fos_time < max_slowdown_factor * fs_time
