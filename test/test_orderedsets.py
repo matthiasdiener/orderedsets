@@ -1,4 +1,4 @@
-from typing import AbstractSet, Any, Type, TypeVar, Union
+from typing import AbstractSet, Type, TypeVar, Union
 
 import pytest
 
@@ -118,14 +118,17 @@ def test_remove_discard_mutable(_cls: T_mutable_set) -> None:
     assert s == {1}
 
 
-@all_set_types
-def test_clear(_cls: Any) -> None:
+@all_immutable_set_types
+def test_clear_immutable(_cls: T_immutable_set) -> None:
     s = _cls([4, 1, 4, 1])
 
-    if _cls in immutable_set_types:
-        with pytest.raises(AttributeError):
-            s.clear()
-        return
+    with pytest.raises(AttributeError):
+        s.clear()  # type: ignore[union-attr]
+
+
+@all_mutable_set_types
+def test_clear_mutable(_cls: T_mutable_set) -> None:
+    s = _cls([4, 1, 4, 1])
 
     s.clear()
 
@@ -171,14 +174,17 @@ def test_hash_value() -> None:
     assert hash(fs) == hash(fos)
 
 
-@all_set_types
-def test_update(_cls: Any) -> None:
+@all_immutable_set_types
+def test_update_immutable(_cls: T_immutable_set) -> None:
     s = _cls([1, 6, 8])
 
-    if _cls in immutable_set_types:
-        with pytest.raises(AttributeError):
-            s.update([6])
-        return
+    with pytest.raises(AttributeError):
+        s.update([6])  # type: ignore[union-attr]
+
+
+@all_mutable_set_types
+def test_update_mutable(_cls: T_mutable_set) -> None:
+    s = _cls([1, 6, 8])
 
     if _cls in ordered_set_types:
         assert list(s) == [1, 6, 8]
@@ -202,28 +208,38 @@ def test_intersection(_cls: T_set) -> None:
     assert s1 == s1.intersection(s1)
 
 
-@all_set_types
-def test_intersection_update(_cls: Any) -> None:
+@all_immutable_set_types
+def test_intersection_update_immutable(_cls: T_immutable_set) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
 
-    if _cls in immutable_set_types:
-        with pytest.raises(AttributeError):
-            s1.intersection_update(s2)
-    else:
-        s1.intersection_update(s2)
-        assert _cls([1]) == s1
+    with pytest.raises(AttributeError):
+        s1.intersection_update(s2)  # type: ignore[union-attr]
 
 
-@all_set_types
-def test_add(_cls: Any) -> None:
+@all_mutable_set_types
+def test_intersection_update_mutable(_cls: T_mutable_set) -> None:
+    s1 = _cls([3, 1, 2])
+    s2 = _cls([1, 7])
+
+    s1.intersection_update(s2)
+    assert _cls([1]) == s1
+
+
+@all_immutable_set_types
+def test_add_immutable(_cls: T_immutable_set) -> None:
     s = _cls([3, 1, 2])
-    if _cls in immutable_set_types:
-        with pytest.raises(AttributeError):
-            s.add(0)
-    else:
-        s.add(0)
-        assert _cls([3, 1, 2, 0]) == s
+
+    with pytest.raises(AttributeError):
+        s.add(0)  # type: ignore[union-attr]
+
+
+@all_mutable_set_types
+def test_add_mutable(_cls: T_mutable_set) -> None:
+    s = _cls([3, 1, 2])
+
+    s.add(0)
+    assert _cls([3, 1, 2, 0]) == s
 
 
 @all_set_types
@@ -244,16 +260,22 @@ def test_difference(_cls: T_set) -> None:
     assert s1.difference(s1) == _cls()
 
 
-@all_set_types
-def test_difference_update(_cls: Any) -> None:
+@all_immutable_set_types
+def test_difference_update_immutable(_cls: T_immutable_set) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
-    if _cls in immutable_set_types:
-        with pytest.raises(AttributeError):
-            s1.difference_update(s2)
-    else:
-        s1.difference_update(s2)
-        assert _cls([3, 2]) == s1
+
+    with pytest.raises(AttributeError):
+        s1.difference_update(s2)  # type: ignore[union-attr]
+
+
+@all_mutable_set_types
+def test_difference_update_mutable(_cls: T_mutable_set) -> None:
+    s1 = _cls([3, 1, 2])
+    s2 = _cls([1, 7])
+
+    s1.difference_update(s2)
+    assert _cls([3, 2]) == s1
 
 
 @all_set_types
@@ -263,16 +285,22 @@ def test_symmetric_difference(_cls: T_set) -> None:
     assert _cls([3, 2, 7]) == s1.symmetric_difference(s2)
 
 
-@all_set_types
-def test_symmetric_difference_update(_cls: Any) -> None:
+@all_immutable_set_types
+def test_symmetric_difference_update_immutable(_cls: T_immutable_set) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
-    if _cls in immutable_set_types:
-        with pytest.raises(AttributeError):
-            s1.symmetric_difference_update(s2)
-    else:
-        s1.symmetric_difference_update(s2)
-        assert _cls([3, 2, 7]) == s1
+
+    with pytest.raises(AttributeError):
+        s1.symmetric_difference_update(s2)  # type: ignore[union-attr]
+
+
+@all_mutable_set_types
+def test_symmetric_difference_update(_cls: T_mutable_set) -> None:
+    s1 = _cls([3, 1, 2])
+    s2 = _cls([1, 7])
+
+    s1.symmetric_difference_update(s2)
+    assert _cls([3, 2, 7]) == s1
 
 
 @all_set_types
@@ -349,7 +377,7 @@ def test_op_xor(_cls: T_set) -> None:
 
 
 @all_set_types
-def test_op_ixor(_cls: Any) -> None:
+def test_op_ixor(_cls: T_set) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     s3 = _cls([42])
@@ -362,42 +390,47 @@ def test_op_ixor(_cls: Any) -> None:
 
 
 @all_set_types
-def test_issubset(_cls: Any) -> None:
+def test_issubset(_cls: T_set) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert not s2.issubset(s1)
     assert _cls().issubset(s1)
 
     if _cls in mutable_set_types:
-        s2.discard(7)
+        s2.discard(7)  # type: ignore[union-attr]
         assert s2.issubset(s1)
 
 
 @all_set_types
-def test_issuperset(_cls: Any) -> None:
+def test_issuperset(_cls: T_set) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert not s1.issuperset(s2)
 
     if _cls in mutable_set_types:
-        s2.discard(7)
+        s2.discard(7)  # type: ignore[union-attr]
         assert s1.issuperset(s2)
         assert _cls(s1).issuperset(s2)
 
 
-@all_set_types
-def test_pop(_cls: Any) -> None:
+@all_immutable_set_types
+def test_pop_immutable(_cls: T_immutable_set) -> None:
     s1 = _cls([3, 1, 2])
-    if _cls in immutable_set_types:
-        with pytest.raises(AttributeError):
-            s1.pop()
-    else:
-        p = s1.pop()
-        assert len(s1) == 2
 
-        if _cls in ordered_set_types:
-            assert p == 2
-            assert _cls([3, 1]) == s1
+    with pytest.raises(AttributeError):
+        s1.pop()  # type: ignore[union-attr]
+
+
+@all_mutable_set_types
+def test_pop_mutable(_cls: T_mutable_set) -> None:
+    s1 = _cls([3, 1, 2])
+
+    p = s1.pop()
+    assert len(s1) == 2
+
+    if _cls in ordered_set_types:
+        assert p == 2
+        assert _cls([3, 1]) == s1
 
 
 @all_set_types
