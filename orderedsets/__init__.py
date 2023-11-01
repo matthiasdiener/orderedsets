@@ -44,8 +44,8 @@ T = TypeVar("T")
 class OrderedSet(AbstractSet[T]):
     """A set class that preserves insertion order.
 
-    It can be used as a drop-in replacement for :class:`set` where ordering is desired.
-
+    It can be used as a drop-in replacement for :class:`set` where ordering is
+    desired.
     """
     def __init__(self, items: Optional[Iterable[T]] = None) -> None:
         """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
@@ -121,7 +121,8 @@ class OrderedSet(AbstractSet[T]):
         return result
 
     def remove(self, element: T) -> None:
-        """Remove *element* from this set, raising :exc:`KeyError` if it is not present."""
+        """Remove *element* from this set, raising :exc:`KeyError` if it is not
+        present."""
         del self._dict[element]
 
     def symmetric_difference(self, s: Iterable[T]) -> OrderedSet[T]:
@@ -214,11 +215,12 @@ class OrderedSet(AbstractSet[T]):
 class FrozenOrderedSet(AbstractSet[T]):
     """A frozen set class that preserves insertion order.
 
-    It can be used as a drop-in replacement for :class:`frozenset` where ordering is desired.
-
+    It can be used as a drop-in replacement for :class:`frozenset` where
+    ordering is desired.
     """
     def __init__(self, items: Optional[Iterable[T]] = None) -> None:
-        """Create a new :class:`FrozenOrderedSet`, optionally initialized with *items*."""
+        """Create a new :class:`FrozenOrderedSet`, optionally initialized with
+        *items*."""
         if not items:
             self._dict: immutabledict[T, None] = immutabledict()
         elif isinstance(items, dict):
