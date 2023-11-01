@@ -1,3 +1,29 @@
+__copyright__ = """
+Copyright (C) 2023 University of Illinois Board of Trustees
+"""
+
+
+__license__ = """
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
+
 from typing import AbstractSet, Type, TypeVar, Union
 
 import pytest
@@ -137,7 +163,7 @@ def test_clear_mutable(_cls: T_mutable_set) -> None:
 
 
 @all_set_types
-def test_toset(_cls: T_set) -> None:
+def test_convert_to_set(_cls: T_set) -> None:
     assert {1, 2, 3} == set(_cls([3, 1, 2]))
 
 
@@ -301,6 +327,15 @@ def test_symmetric_difference_update(_cls: T_mutable_set) -> None:
 
     s1.symmetric_difference_update(s2)
     assert _cls([3, 2, 7]) == s1
+
+
+@all_set_types
+def test_union(_cls: T_set) -> None:
+    s1 = _cls([3, 1, 2])
+    s2 = _cls([1, 7])
+    s3 = _cls([42])
+    assert _cls([1, 3, 2, 7]) == s1.union(s2)
+    assert _cls([1, 3, 2, 42]) == s1.union(s3)
 
 
 @all_set_types

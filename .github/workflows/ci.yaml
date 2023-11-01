@@ -35,24 +35,17 @@ jobs:
         pip install -e .
         ./run-mypy.sh
 
-    # pylint:
-    #     name: Pylint
-    #     runs-on: ubuntu-latest
-    #     steps:
-    #     - uses: actions/checkout@v3
-    #     -
-    #       uses: actions/setup-python@v4
-    #       with:
-    #         python-version: '3.x'
-    #     - name: Install
-    #       run: |
-    #         . .ci-support/install.sh
-
-    #     - name: Run Pylint
-    #       run: |
-    #         MINIFORGE_INSTALL_DIR=.miniforge3
-    #         . "$MINIFORGE_INSTALL_DIR/bin/activate" testing
-    #         ./run-pylint.sh
+  # pylint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.x'
+  #   - name: Run Pylint
+  #     run: |
+  #       pip install -e .
+  #       ./run-pylint.sh
 
     # pydocstyle:
     #     runs-on: ubuntu-latest
@@ -88,7 +81,7 @@ jobs:
         python -m pip install pytest pytest-cov
         pip install -e .
         cd test
-        python -m pytest --cov=orderedsets --durations=5 --tb=native -rxsw --cov-fail-under=100 --cov-report=term-missing .
+        python -m pytest --cov=orderedsets --durations=5 --tb=native -rxsw --cov-fail-under=100 --cov-report=term-missing -v .
 
     # doc:
     #     name: Documentation
