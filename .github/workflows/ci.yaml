@@ -44,6 +44,7 @@ jobs:
         python-version: '3.x'
     - name: Run Pylint
       run: |
+        pip install pylint
         pip install -e .
         ./run-pylint.sh
 
