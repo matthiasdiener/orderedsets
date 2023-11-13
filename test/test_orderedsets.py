@@ -24,7 +24,7 @@ SOFTWARE.
 """
 
 
-from typing import AbstractSet, Type, TypeVar, Union, Set, FrozenSet
+from typing import AbstractSet, FrozenSet, Set, Type, TypeVar, Union
 
 import pytest
 
@@ -38,11 +38,10 @@ mutable_set_types = (OrderedSet, set)
 immutable_set_types = (FrozenOrderedSet, frozenset)
 
 T_set = Union[Type[OrderedSet[T]], Type[FrozenOrderedSet[T]],
-              Type[Set[T]],
-              Type[FrozenSet[T]]]
+              Type[Set[T]], Type[FrozenSet[T]]]
 T_ordered_set = Union[Type[OrderedSet[T]], Type[FrozenOrderedSet[T]]]
-T_mutable_set = Union[Type[OrderedSet[T]], Type[set[T]]]
-T_immutable_set = Union[Type[FrozenOrderedSet[T]], Type[frozenset[T]]]
+T_mutable_set = Union[Type[OrderedSet[T]], Type[Set[T]]]
+T_immutable_set = Union[Type[FrozenOrderedSet[T]], Type[FrozenSet[T]]]
 
 all_set_types = pytest.mark.parametrize("_cls", set_types)
 all_ordered_set_types = pytest.mark.parametrize("_cls", ordered_set_types)
