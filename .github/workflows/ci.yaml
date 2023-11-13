@@ -11,7 +11,7 @@ jobs:
   flake8:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python 3.8
       uses: actions/setup-python@v4
       with:
@@ -24,7 +24,7 @@ jobs:
   mypy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python 3.x
       uses: actions/setup-python@v4
       with:
@@ -35,22 +35,23 @@ jobs:
         pip install -e .
         ./run-mypy.sh
 
-  # pylint:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - uses: actions/setup-python@v4
-  #     with:
-  #       python-version: '3.x'
-  #   - name: Run Pylint
-  #     run: |
-  #       pip install -e .
-  #       ./run-pylint.sh
+  pylint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    - name: Run Pylint
+      run: |
+        pip install pylint PyYAML pytest
+        pip install -e .
+        ./run-pylint.sh
 
     # pydocstyle:
     #     runs-on: ubuntu-latest
     #     steps:
-    #     - uses: actions/checkout@v3
+    #     - uses: actions/checkout@v4
     #     -
     #       uses: actions/setup-python@v4
     #       with:
@@ -71,7 +72,7 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
@@ -87,7 +88,7 @@ jobs:
     #     name: Documentation
     #     runs-on: ubuntu-latest
     #     steps:
-    #     - uses: actions/checkout@v3
+    #     - uses: actions/checkout@v4
     #     - name: Set up Python 3.x
     #       uses: actions/setup-python@v4
     #       with:
