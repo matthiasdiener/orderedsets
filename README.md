@@ -1,4 +1,5 @@
 [![PyPI version](https://badge.fury.io/py/orderedsets.svg)](https://badge.fury.io/py/orderedsets)
+[![Doc Status](https://img.shields.io/github/actions/workflow/status/matthiasdiener/orderedsets/doc.yaml?label=docs)]([https://web.de](https://matthiasdiener.github.io/orderedsets))
 ![License](https://img.shields.io/pypi/l/orderedsets)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/orderedsets)
 
@@ -46,6 +47,9 @@ assert os == fos == set([1, 2, 4]) == frozenset([1, 2, 4])
 # only immutable sets can be hashed
 assert hash(fos) == hash(frozenset([1, 2, 4]))
 ```
+
+Please also see the [documentation](https://matthiasdiener.github.io/orderedsets).
+
 
 ## References
 
