@@ -24,7 +24,7 @@ SOFTWARE.
 """
 
 
-from typing import AbstractSet, Type, TypeVar, Union
+from typing import AbstractSet, Type, TypeVar, Union, Set, FrozenSet
 
 import pytest
 
@@ -38,7 +38,8 @@ mutable_set_types = (OrderedSet, set)
 immutable_set_types = (FrozenOrderedSet, frozenset)
 
 T_set = Union[Type[OrderedSet[T]], Type[FrozenOrderedSet[T]],
-              Type[set[T]], Type[frozenset[T]]]
+              Type[Set[T]],
+              Type[FrozenSet[T]]]
 T_ordered_set = Union[Type[OrderedSet[T]], Type[FrozenOrderedSet[T]]]
 T_mutable_set = Union[Type[OrderedSet[T]], Type[set[T]]]
 T_immutable_set = Union[Type[FrozenOrderedSet[T]], Type[frozenset[T]]]
