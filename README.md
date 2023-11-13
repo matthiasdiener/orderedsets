@@ -1,5 +1,5 @@
 [![PyPI version](https://badge.fury.io/py/orderedsets.svg)](https://badge.fury.io/py/orderedsets)
-[![Doc Status](https://img.shields.io/github/actions/workflow/status/matthiasdiener/orderedsets/doc.yaml?label=docs)]([https://web.de](https://matthiasdiener.github.io/orderedsets))
+[![Doc Status](https://img.shields.io/github/actions/workflow/status/matthiasdiener/orderedsets/doc.yaml?label=docs)](https://matthiasdiener.github.io/orderedsets)
 ![License](https://img.shields.io/pypi/l/orderedsets)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/orderedsets)
 
