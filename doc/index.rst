@@ -8,7 +8,7 @@ Usage
 
 The :class:`.OrderedSet`  class can be used as a drop-in replacement for :class:`set`.
 
-For replacing an :class:`frozenset`, you can use an :class:`.FrozenOrderedSet`. The API is the same as :class:`.OrderedSet`, but it will use an :class:`immutabledict.immutabledict` under the hood.
+For replacing a :class:`frozenset`, you can use a :class:`.FrozenOrderedSet`. The API is the same as :class:`.OrderedSet`, but it uses an :class:`immutabledict.immutabledict` under the hood.
 
 .. code-block:: python
 
