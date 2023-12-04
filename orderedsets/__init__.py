@@ -37,6 +37,7 @@ from collections.abc import Iterator, Set
 from typing import AbstractSet, Any, Dict, Iterable, Optional, TypeVar
 
 from immutabledict import immutabledict
+from pytools import memoize_method
 
 T = TypeVar("T")
 
@@ -229,16 +230,10 @@ class FrozenOrderedSet(AbstractSet[T]):
             self._dict = \
                 immutabledict.fromkeys(items)
 
-        self._my_hash: Optional[int] = None
-        self._len: Optional[int] = None
-
+    @memoize_method
     def __hash__(self) -> int:
         """Return a hash of this set."""
-        if self._my_hash:
-            return self._my_hash
-
-        self._my_hash = hash(frozenset(self))
-        return self._my_hash
+        return hash(frozenset(self))
 
     def __eq__(self, other: object) -> bool:
         """Return whether this set is equal to *other*."""
@@ -246,19 +241,17 @@ class FrozenOrderedSet(AbstractSet[T]):
                 and len(self) == len(other)
                 and all(i in other for i in self))
 
+    @memoize_method
     def __repr__(self) -> str:
         """Return a string representation of this set."""
         if len(self) == 0:
             return "FrozenOrderedSet()"
         return "FrozenOrderedSet({" + ", ".join(list(map(str, self._dict))) + "})"
 
+    @memoize_method
     def __len__(self) -> int:
         """Return the number of elements in this set."""
-        if self._len:
-            return self._len
-
-        self._len = len(self._dict)
-        return self._len
+        return len(self._dict)
 
     def __contains__(self, o: object) -> bool:
         """Return whether *o* is in this set."""
