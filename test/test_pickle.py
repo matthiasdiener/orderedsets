@@ -27,8 +27,6 @@ import os
 import sys
 from typing import Any, Callable, Dict, Optional
 
-import pytest
-
 # {{{ pickle test infrastructure
 
 
@@ -62,7 +60,6 @@ def run_test_with_pickle_inner() -> None:
 # }}}
 
 
-@pytest.mark.xfail(reason="needs fix for caching hash value issue")
 def test_pickle_hash(pickle_dumps: Optional[bytes] = None) -> None:
     from pickle import dumps, loads
 
