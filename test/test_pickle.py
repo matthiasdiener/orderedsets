@@ -60,11 +60,7 @@ def run_test_with_pickle_inner() -> None:
 # }}}
 
 
-def test_pickle_hash() -> None:
-    run_test_with_pickle(_do_test_pickle_hash, b"")
-
-
-def _do_test_pickle_hash(pickle_dumps: bytes) -> None:
+def test_pickle_hash(pickle_dumps: Optional[bytes] = None) -> None:
     from pickle import dumps, loads
 
     from orderedsets import FrozenOrderedSet
@@ -78,8 +74,7 @@ def _do_test_pickle_hash(pickle_dumps: bytes) -> None:
         print(hash(f1), hash(f2))
         assert hash(f1) == hash(f2)
     else:
-        pickle_dumps = dumps(f1)
-        run_test_with_pickle(_do_test_pickle_hash, pickle_dumps)
+        run_test_with_pickle(test_pickle_hash, dumps(f1))
 
 
 if __name__ == "__main__":
