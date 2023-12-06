@@ -7,10 +7,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "orderedsets"
-version = "2023.1"
+version = "2023.2"
 authors = [
   { name="Matthias Diener", email="matthias.diener@gmail.com" },
-  { name="Andreas Kloeckner", email="inform@tiker.net"},
+  { name="Andreas Kloeckner", email="inform@tiker.net" },
 ]
 description = "An implementation of mutable and immutable ordered sets."
 dependencies = [
