@@ -27,8 +27,6 @@ import os
 import sys
 from typing import Any, Callable, Dict, Optional
 
-import pytest
-
 from orderedsets import FrozenOrderedSet
 
 # {{{ test infrastructure
@@ -70,7 +68,6 @@ def run_test_with_new_python_invocation_inner() -> None:
 _set_data = ["a", "b", "c"]
 
 
-@pytest.mark.xfail(reason="needs fix for caching hash value issue")
 def test_pickle_hash() -> None:
     from pickle import dumps
 

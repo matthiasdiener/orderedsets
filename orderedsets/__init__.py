@@ -232,6 +232,14 @@ class FrozenOrderedSet(AbstractSet[T]):
         self._my_hash: Optional[int] = None
         self._len: Optional[int] = None
 
+    def __getstate__(self) -> Dict[Any, Any]:
+        # The hash must be recomputed on unpickling, because it may
+        # change across Python invocations (e.g. due to hash randomization of
+        # strings stored in the FrozenOrderedSet)
+        state = self.__dict__.copy()
+        state["_my_hash"] = None
+        return state
+
     def __hash__(self) -> int:
         """Return a hash of this set."""
         if self._my_hash:
