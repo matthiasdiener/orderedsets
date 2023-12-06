@@ -561,3 +561,18 @@ def test_ordering(_cls: T_set[int]) -> None:
     assert not (oset3 >= oset4)
     assert not (oset3 >= set(oset4))
     # assert not (oset3 >= list(oset4))
+
+
+@all_ordered_set_types
+def test_isinstance(_cls: T_ordered_set[int]) -> None:
+    assert isinstance(_cls(), AbstractSet)
+    assert not isinstance(_cls(), Set)
+    assert not isinstance(_cls(), set)
+    assert not isinstance(_cls(), frozenset)
+
+    if _cls in mutable_set_types:
+        assert isinstance(_cls(), OrderedSet)
+        assert not isinstance(_cls(), FrozenOrderedSet)
+    else:
+        assert not isinstance(_cls(), OrderedSet)
+        assert isinstance(_cls(), FrozenOrderedSet)

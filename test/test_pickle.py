@@ -27,11 +27,14 @@ import os
 import sys
 from typing import Any, Callable, Dict, Optional
 
-# {{{ pickle test infrastructure
+from orderedsets import FrozenOrderedSet
+
+# {{{ test infrastructure
 
 
-def run_test_with_pickle(f: Callable[..., Any], *args: Any,
-                         extra_env_vars: Optional[Dict[str, Any]] = None) -> None:
+def run_test_with_new_python_invocation(f: Callable[..., Any], *args: Any,
+                                        extra_env_vars:
+                                        Optional[Dict[str, Any]] = None) -> None:
     if extra_env_vars is None:
         extra_env_vars = {}
 
@@ -50,7 +53,7 @@ def run_test_with_pickle(f: Callable[..., Any], *args: Any,
     check_call([sys.executable, __file__], env=my_env)
 
 
-def run_test_with_pickle_inner() -> None:
+def run_test_with_new_python_invocation_inner() -> None:
     from base64 import b64decode
     from pickle import loads
     f, args = loads(b64decode(os.environ["INVOCATION_INFO"].encode()))
@@ -60,26 +63,36 @@ def run_test_with_pickle_inner() -> None:
 # }}}
 
 
-def test_pickle_hash(pickle_dumps: Optional[bytes] = None) -> None:
-    from pickle import dumps, loads
+# {{{ test that pickling a FrozenOrderedSet recomputes the hash on unpickling
 
-    from orderedsets import FrozenOrderedSet
+def test_pickle_hash() -> None:
+    from pickle import dumps
 
     f1 = FrozenOrderedSet(["a", "b", "c"])
-    hash(f1)  # Force creating a cached hash value
+    print(hash(f1))  # Force creating a cached hash value
 
-    if pickle_dumps:
-        f2 = loads(pickle_dumps)
-        assert f1 == f2
-        print(hash(f1), hash(f2))
-        assert hash(f1) == hash(f2)
-    else:
-        run_test_with_pickle(test_pickle_hash, dumps(f1))
+    assert f1._my_hash
+    run_test_with_new_python_invocation(_test_pickle_hash_stage2, dumps(f1))
+
+
+def _test_pickle_hash_stage2(pickle_dumps: bytes) -> None:
+    from pickle import loads
+    f1 = FrozenOrderedSet(["a", "b", "c"])  # same set as above
+
+    f2 = loads(pickle_dumps)
+    assert f1 == f2
+    print(hash(f1), hash(f2))
+
+    # If the hash value is restored from the pickle file, then the hash values
+    # would not be equal, because the hash changes on each Python execution.
+    assert hash(f1) == hash(f2)
+
+# }}}
 
 
 if __name__ == "__main__":
     if "INVOCATION_INFO" in os.environ:
-        run_test_with_pickle_inner()
+        run_test_with_new_python_invocation_inner()
     elif len(sys.argv) > 1:
         exec(sys.argv[1])
     else:
