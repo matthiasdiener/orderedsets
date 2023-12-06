@@ -67,28 +67,35 @@ def run_test_with_new_python_invocation_inner() -> None:
 
 # {{{ test that pickling a FrozenOrderedSet recomputes the hash on unpickling
 
+_set_data = ["a", "b", "c"]
+
+
 @pytest.mark.xfail(reason="needs fix for caching hash value issue")
 def test_pickle_hash() -> None:
     from pickle import dumps
 
-    f1 = FrozenOrderedSet(["a", "b", "c"])
+    f1 = FrozenOrderedSet(_set_data)
     print(hash(f1))  # Force creating a cached hash value
 
     assert f1._my_hash
-    run_test_with_new_python_invocation(_test_pickle_hash_stage2, dumps(f1))
+    run_test_with_new_python_invocation(_test_pickle_hash_stage2, dumps(f1),
+                                        hash(f1))
 
 
-def _test_pickle_hash_stage2(pickle_dumps: bytes) -> None:
+def _test_pickle_hash_stage2(pickle_dumps: bytes, old_hash: int) -> None:
     from pickle import loads
-    f1 = FrozenOrderedSet(["a", "b", "c"])  # same set as above
+    f1 = FrozenOrderedSet(_set_data)  # same set as above
 
     f2 = loads(pickle_dumps)
     assert f1 == f2
-    print(hash(f1), hash(f2))
+    print(hash(f1), hash(f2), old_hash)
 
     # If the hash value is restored from the pickle file, then the hash values
     # would not be equal, because the hash changes on each Python execution.
     assert hash(f1) == hash(f2)
+
+    # Make sure the hash value has changed after unpickling.
+    assert hash(f2) != old_hash
 
 # }}}
 

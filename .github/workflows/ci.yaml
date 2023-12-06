@@ -83,20 +83,3 @@ jobs:
         pip install -e .
         cd test
         python -m pytest --cov=orderedsets --durations=5 --tb=native -rxsw --cov-fail-under=100 --cov-report=term-missing -v .
-
-    # doc:
-    #     name: Documentation
-    #     runs-on: ubuntu-latest
-    #     steps:
-    #     - uses: actions/checkout@v4
-    #     - name: Set up Python 3.x
-    #       uses: actions/setup-python@v4
-    #       with:
-    #         python-version: '3.x'
-    #     - name: Build docs
-    #       run: |
-    #         set -x
-    #         pip install sphinx-math-dollar sphinx-copybutton furo
-    #         cd doc
-    #         make html SPHINXOPTS="-W --keep-going -n"
-    #         make latexpdf SPHINXOPTS="-W --keep-going -n"
