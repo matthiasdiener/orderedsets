@@ -232,6 +232,9 @@ class FrozenOrderedSet(AbstractSet[T]):
         self._my_hash: Optional[int] = None
         self._len: Optional[int] = None
 
+    def __reduce__(self) -> tuple[Any, ...]:
+        return (self.__class__, (self._dict,))
+
     def __hash__(self) -> int:
         """Return a hash of this set."""
         if self._my_hash:
