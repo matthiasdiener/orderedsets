@@ -64,3 +64,8 @@ Please also see the [documentation](https://matthiasdiener.github.io/orderedsets
 ### Discussions
 
 - https://discuss.python.org/t/add-orderedset-to-stdlib/12730
+
+### Python implementations
+
+- https://github.com/python/cpython/blob/main/Objects/setobject.c
+- https://github.com/python/cpython/blob/main/Objects/dictobject.c
