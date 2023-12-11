@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "orderedsets"
-version = "2023.2"
+version = "2023.3"
 authors = [
   { name="Matthias Diener", email="matthias.diener@gmail.com" },
   { name="Andreas Kloeckner", email="inform@tiker.net" },
