@@ -1,3 +1,5 @@
+"""Set classes that preserve insertion order."""
+
 from __future__ import annotations
 
 __copyright__ = """
@@ -45,6 +47,7 @@ class OrderedSet(AbstractSet[T]):
     It can be used as a drop-in replacement for :class:`set` where ordering is
     desired.
     """
+
     def __init__(self, items: Optional[Iterable[T]] = None) -> None:
         """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
         if not items:
@@ -119,8 +122,7 @@ class OrderedSet(AbstractSet[T]):
         return result
 
     def remove(self, element: T) -> None:
-        """Remove *element* from this set, raising :exc:`KeyError` if it is not
-        present."""
+        """Remove *element* from this set, raising :exc:`KeyError` if not present."""
         del self._dict[element]
 
     def symmetric_difference(self, s: Iterable[T]) -> OrderedSet[T]:
@@ -216,8 +218,9 @@ class FrozenOrderedSet(AbstractSet[T]):
     It can be used as a drop-in replacement for :class:`frozenset` where
     ordering is desired.
     """
+
     def __init__(self, items: Optional[Iterable[T]] = None) -> None:
-        """Create a new :class:`FrozenOrderedSet`, optionally initialized with
+        """Create a new :class:`FrozenOrderedSet`, optionally initialized with \
         *items*."""
         if not items:
             self._dict: dict[T, None] = {}
@@ -229,6 +232,7 @@ class FrozenOrderedSet(AbstractSet[T]):
         self._my_hash: Optional[int] = None
 
     def __reduce__(self) -> tuple[Any, ...]:
+        """Return pickling information for this set."""
         # The hash must be recomputed on unpickling, because it may
         # change across Python invocations (e.g. due to hash randomization of
         # strings stored in the FrozenOrderedSet), so make sure it is not saved
