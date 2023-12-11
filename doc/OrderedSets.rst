@@ -17,7 +17,7 @@ FrozenOrderedSet
     :member-order: bysource
     :show-inheritance:
     :special-members:
-    :exclude-members: __weakref__
+    :exclude-members: __weakref__, __reduce__
 
 
 Internal stuff that is only here because the documentation tool wants it
