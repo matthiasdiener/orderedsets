@@ -1,4 +1,4 @@
-from orderedsets import OrderedSet, FrozenOrderedSet
+from orderedsets import FrozenOrderedSet, OrderedSet
 
 os = OrderedSet([1, 2, 4])
 os.add(0)
@@ -9,8 +9,9 @@ fos = FrozenOrderedSet([1, 2, 4])
 # a.add(0)  # raises AttributeError: 'FrozenOrderedSet' object has no attribute 'add'
 assert list(fos) == [1, 2, 4]
 
-# sets with the same elements compare equal
-assert os == fos == set([1, 2, 4]) == frozenset([1, 2, 4])
+# Sets with the same elements compare equal
+assert os == fos == {1, 2, 4} == frozenset([1, 2, 4])
 
-# only immutable sets can be hashed
+# Only immutable sets can be hashed (and must have the same hash value if they
+# compare equal)
 assert hash(fos) == hash(frozenset([1, 2, 4]))

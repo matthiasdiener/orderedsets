@@ -36,8 +36,6 @@ __version__ = importlib_metadata.version(__package__ or __name__)
 from collections.abc import Iterator, Set
 from typing import AbstractSet, Any, Dict, Iterable, Optional, TypeVar
 
-from immutabledict import immutabledict
-
 T = TypeVar("T")
 
 
@@ -222,15 +220,13 @@ class FrozenOrderedSet(AbstractSet[T]):
         """Create a new :class:`FrozenOrderedSet`, optionally initialized with
         *items*."""
         if not items:
-            self._dict: immutabledict[T, None] = immutabledict()
+            self._dict: dict[T, None] = {}
         elif isinstance(items, dict):
-            self._dict = immutabledict(items)
+            self._dict = items
         else:
-            self._dict = \
-                immutabledict.fromkeys(items)
+            self._dict = dict.fromkeys(items)
 
         self._my_hash: Optional[int] = None
-        self._len: Optional[int] = None
 
     def __reduce__(self) -> tuple[Any, ...]:
         # The hash must be recomputed on unpickling, because it may
@@ -261,11 +257,7 @@ class FrozenOrderedSet(AbstractSet[T]):
 
     def __len__(self) -> int:
         """Return the number of elements in this set."""
-        if self._len:
-            return self._len
-
-        self._len = len(self._dict)
-        return self._len
+        return len(self._dict)
 
     def __contains__(self, o: object) -> bool:
         """Return whether *o* is in this set."""

@@ -7,18 +7,16 @@
 # orderedsets
 
 An implementation of mutable and immutable ordered sets as thin wrappers around
-Python's `dict` class for the `OrderedSet` class, and
-[`immutabledict`](https://github.com/corenting/immutabledict) for the `FrozenOrderedSet` class.
+Python's `dict` class.
 These classes are meant as drop-in replacements for Python's builtin `set` and
 `frozenset` classes. Care has been taken to provide the same functionality as the Python classes,
-without API additions or removals, to allow easy switching between set implementations. 
+without API additions or removals, to allow easy switching between set implementations.
 
 In contrast to Python's builtin `set` and `frozenset` classes, the order of
 items is kept (generally, insertion order), such that iterating over items in
 the set as well as mutating operations are deterministic.
 
-This package requires the [`immutabledict`](https://github.com/corenting/immutabledict)
-package for the immutable set class, but has no other external dependencies.
+This package has no external dependencies.
 
 
 ## Usage

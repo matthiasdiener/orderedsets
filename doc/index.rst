@@ -6,9 +6,10 @@ This site covers orderedsets' API documentation. For more information about orde
 Usage
 -----
 
-The :class:`.OrderedSet`  class can be used as a drop-in replacement for :class:`set`.
-
-For replacing a :class:`frozenset`, you can use a :class:`.FrozenOrderedSet`. The API is the same as :class:`.OrderedSet`, but it uses an :class:`immutabledict.immutabledict` under the hood.
+The :class:`.OrderedSet` class can be used as a drop-in replacement for :class:`set`.
+To replace a :class:`frozenset`, you can use a :class:`.FrozenOrderedSet`. The
+API is the same as :class:`.OrderedSet`, but without methods that mutate the
+set.
 
 .. code-block:: python
 
