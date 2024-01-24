@@ -1,8 +1,7 @@
 [![PyPI version](https://badge.fury.io/py/orderedsets.svg)](https://badge.fury.io/py/orderedsets)
 [![Doc Status](https://img.shields.io/github/actions/workflow/status/matthiasdiener/orderedsets/doc.yaml?label=docs)](https://matthiasdiener.github.io/orderedsets)
-![License](https://img.shields.io/pypi/l/orderedsets)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/orderedsets)
-
+[![License](https://img.shields.io/pypi/l/orderedsets)](https://github.com/matthiasdiener/orderedsets/blob/main/LICENSE)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/orderedsets)](https://badge.fury.io/py/orderedsets)
 
 # orderedsets
 
