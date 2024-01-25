@@ -54,6 +54,31 @@ def f(s: AbstractSet[T]) -> AbstractSet[T]:
 
 
 @all_set_types
+def test_init(_cls: T_set[int]) -> None:
+    # Simple init
+    s = _cls([4, 1, 4, 1])
+    assert len(s) == 2
+    assert s == {4, 1}
+
+    # Empty init
+    s = _cls()
+    assert s == set()
+
+    s = _cls([])
+    assert s == set()
+    s = _cls(())
+    assert s == set()
+    s = _cls({})
+    assert s == set()
+
+    with pytest.raises(TypeError):
+        s = _cls(None)
+
+    with pytest.raises(TypeError):
+        s = _cls(42)
+
+
+@all_set_types
 def test_call_abstractset(_cls: T_set[int]) -> None:
     f(_cls([4, 1, 4, 1]))
 

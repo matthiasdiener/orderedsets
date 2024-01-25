@@ -48,14 +48,14 @@ class OrderedSet(AbstractSet[T]):
     desired.
     """
 
-    def __init__(self, items: Optional[Iterable[T]] = None) -> None:
-        """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
-        if not items:
-            self._dict: Dict[T, None] = {}
-        elif isinstance(items, dict):
-            self._dict = items
+    def __init__(self, *args: Any) -> None:
+        """Create a new :class:`OrderedSet`, optionally initialized with *args*."""
+        if len(args) > 1:
+            raise TypeError("OrderedSet expected at most 1 argument, got ", len(args))
+        elif len(args) == 0:
+            self._dict: dict[T, None] = {}
         else:
-            self._dict = dict.fromkeys(items)
+            self._dict = dict.fromkeys(*args)
 
     def __eq__(self, other: object) -> bool:
         """Return whether this set is equal to *other*."""
@@ -219,15 +219,14 @@ class FrozenOrderedSet(AbstractSet[T]):
     ordering is desired.
     """
 
-    def __init__(self, items: Optional[Iterable[T]] = None) -> None:
-        """Create a new :class:`FrozenOrderedSet`, optionally initialized with \
-        *items*."""
-        if not items:
+    def __init__(self, *args: Any) -> None:
+        """Create a new :class:`FrozenOrderedSet`, optionally initialized with *args*."""
+        if len(args) > 1:
+            raise TypeError("FrozenOrderedSet expected at most 1 argument, got ", len(args))
+        elif len(args) == 0:
             self._dict: dict[T, None] = {}
-        elif isinstance(items, dict):
-            self._dict = items
         else:
-            self._dict = dict.fromkeys(items)
+            self._dict = dict.fromkeys(*args)
 
         self._my_hash: Optional[int] = None
 
