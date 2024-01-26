@@ -43,6 +43,10 @@ import pytest
 def test_speed(statement: str, _setup: str, max_slowdown_factor: float,
                skip_mutable: bool, skip_immutable: bool) -> None:
 
+    import platform
+    if platform.python_implementation() == "PyPy":
+        max_slowdown_factor *= 3
+
     if not skip_mutable:
         s_time = timeit(statement, setup=_setup, number=10000)
         os_time = timeit(statement,
