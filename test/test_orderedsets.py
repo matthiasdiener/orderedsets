@@ -72,10 +72,14 @@ def test_init(_cls: T_set[int]) -> None:
     assert s == set()
 
     with pytest.raises(TypeError):
-        s = _cls(None)
+        s = _cls(None)  # type: ignore[call-overload]
 
     with pytest.raises(TypeError):
-        s = _cls(42)
+        s = _cls(42)  # type: ignore[call-overload]
+
+    # init with >1 elements
+    with pytest.raises(TypeError):
+        s = _cls(1, 2)  # type: ignore[call-overload]
 
 
 @all_set_types
@@ -218,13 +222,13 @@ def test_hash(_cls: T_set[int]) -> None:
 
 
 def test_hash_value() -> None:
-    fos = FrozenOrderedSet([1, 2, 3])
+    fos: FrozenOrderedSet[str] = FrozenOrderedSet([1, 2, 3])
     fs = frozenset([1, 2, 3])
 
     assert fs == fos
     assert hash(fs) == hash(fos)
 
-    fos2 = FrozenOrderedSet(["a", "b", "c"])
+    fos2: FrozenOrderedSet[str] = FrozenOrderedSet(["a", "b", "c"])
     fs2 = frozenset(["a", "b", "c"])
 
     assert fs2 == fos2

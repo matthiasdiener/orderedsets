@@ -36,7 +36,7 @@ except ModuleNotFoundError:  # pragma: no cover
 __version__ = importlib_metadata.version(__package__ or __name__)
 
 from collections.abc import Iterator, Set
-from typing import AbstractSet, Any, Dict, Iterable, Optional, TypeVar
+from typing import AbstractSet, Any, Iterable, Optional, TypeVar
 
 T = TypeVar("T")
 
@@ -51,7 +51,8 @@ class OrderedSet(AbstractSet[T]):
     def __init__(self, *args: Any) -> None:
         """Create a new :class:`OrderedSet`, optionally initialized with *args*."""
         if len(args) > 1:
-            raise TypeError("OrderedSet expected at most 1 argument, got ", len(args))
+            raise TypeError("OrderedSet expected at most 1 argument, got ",
+                            len(args))
         elif len(args) == 0:
             self._dict: dict[T, None] = {}
         else:
@@ -220,9 +221,11 @@ class FrozenOrderedSet(AbstractSet[T]):
     """
 
     def __init__(self, *args: Any) -> None:
-        """Create a new :class:`FrozenOrderedSet`, optionally initialized with *args*."""
+        """Create a new :class:`FrozenOrderedSet`, optionally initialized \
+           with *args*."""
         if len(args) > 1:
-            raise TypeError("FrozenOrderedSet expected at most 1 argument, got ", len(args))
+            raise TypeError("FrozenOrderedSet expected at most 1 argument, got ",
+                            len(args))
         elif len(args) == 0:
             self._dict: dict[T, None] = {}
         else:
