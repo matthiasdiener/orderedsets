@@ -54,6 +54,36 @@ def f(s: AbstractSet[T]) -> AbstractSet[T]:
 
 
 @all_set_types
+def test_init(_cls: T_set[int]) -> None:
+    # Simple init
+    s = _cls([4, 1, 4, 1])
+    assert len(s) == 2
+    assert s == {4, 1}
+
+    # Empty init
+    s = _cls()
+    assert s == set()
+
+    s = _cls([])
+    assert s == set()
+    s = _cls(())
+    assert s == set()
+    s = _cls({})
+    assert s == set()
+
+    # Invalid single-item init
+    with pytest.raises(TypeError):
+        s = _cls(None)  # type: ignore[arg-type,call-overload]
+
+    with pytest.raises(TypeError):
+        s = _cls(42)  # type: ignore[arg-type,call-overload]
+
+    # Invalid multi-item init
+    with pytest.raises(TypeError):
+        s = _cls(1, 2)  # type: ignore[arg-type,call-overload,call-arg]
+
+
+@all_set_types
 def test_call_abstractset(_cls: T_set[int]) -> None:
     f(_cls([4, 1, 4, 1]))
 
@@ -193,13 +223,13 @@ def test_hash(_cls: T_set[int]) -> None:
 
 
 def test_hash_value() -> None:
-    fos = FrozenOrderedSet([1, 2, 3])
+    fos: FrozenOrderedSet[int] = FrozenOrderedSet([1, 2, 3])
     fs = frozenset([1, 2, 3])
 
     assert fs == fos
     assert hash(fs) == hash(fos)
 
-    fos2 = FrozenOrderedSet(["a", "b", "c"])
+    fos2: FrozenOrderedSet[str] = FrozenOrderedSet(["a", "b", "c"])
     fs2 = frozenset(["a", "b", "c"])
 
     assert fs2 == fos2

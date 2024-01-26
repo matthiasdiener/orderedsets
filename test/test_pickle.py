@@ -71,7 +71,7 @@ _set_data = ["a", "b", "c"]
 def test_pickle_hash() -> None:
     from pickle import dumps
 
-    f1 = FrozenOrderedSet(_set_data)
+    f1: FrozenOrderedSet[str] = FrozenOrderedSet(_set_data)
     print(hash(f1))  # Force creating a cached hash value
 
     assert f1._my_hash
@@ -81,7 +81,7 @@ def test_pickle_hash() -> None:
 
 def _test_pickle_hash_stage2(pickle_dumps: bytes, old_hash: int) -> None:
     from pickle import loads
-    f1 = FrozenOrderedSet(_set_data)  # same set as above
+    f1: FrozenOrderedSet[str] = FrozenOrderedSet(_set_data)  # same set as above
 
     f2 = loads(pickle_dumps)
     assert f1 == f2

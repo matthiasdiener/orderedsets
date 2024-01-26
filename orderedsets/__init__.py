@@ -36,9 +36,13 @@ except ModuleNotFoundError:  # pragma: no cover
 __version__ = importlib_metadata.version(__package__ or __name__)
 
 from collections.abc import Iterator, Set
-from typing import AbstractSet, Any, Dict, Iterable, Optional, TypeVar
+from typing import AbstractSet, Any, Iterable, Optional, Type, TypeVar, Union
 
 T = TypeVar("T")
+
+
+class _NotProvided:
+    pass
 
 
 class OrderedSet(AbstractSet[T]):
@@ -48,14 +52,15 @@ class OrderedSet(AbstractSet[T]):
     desired.
     """
 
-    def __init__(self, items: Optional[Iterable[T]] = None) -> None:
+    def __init__(self, items: Union[Iterable[T], Type[_NotProvided]] = _NotProvided)\
+            -> None:
         """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
-        if not items:
-            self._dict: Dict[T, None] = {}
-        elif isinstance(items, dict):
-            self._dict = items
+        if items is _NotProvided:
+            self._dict = {}
         else:
-            self._dict = dict.fromkeys(items)
+            # type-ignore-reason:
+            # mypy thinks 'items' can still be Type[_NotProvided] here.
+            self._dict = dict.fromkeys(items)  # type: ignore[arg-type]
 
     def __eq__(self, other: object) -> bool:
         """Return whether this set is equal to *other*."""
@@ -219,15 +224,16 @@ class FrozenOrderedSet(AbstractSet[T]):
     ordering is desired.
     """
 
-    def __init__(self, items: Optional[Iterable[T]] = None) -> None:
-        """Create a new :class:`FrozenOrderedSet`, optionally initialized with \
-        *items*."""
-        if not items:
-            self._dict: dict[T, None] = {}
-        elif isinstance(items, dict):
-            self._dict = items
+    def __init__(self, items: Union[Iterable[T], Type[_NotProvided]] = _NotProvided)\
+            -> None:
+        """Create a new :class:`FrozenOrderedSet`, optionally initialized \
+            with *items*."""
+        if items is _NotProvided:
+            self._dict = {}
         else:
-            self._dict = dict.fromkeys(items)
+            # type-ignore-reason:
+            # mypy thinks 'items' can still be Type[_NotProvided] here.
+            self._dict = dict.fromkeys(items)  # type: ignore[arg-type]
 
         self._my_hash: Optional[int] = None
 
@@ -292,7 +298,7 @@ class FrozenOrderedSet(AbstractSet[T]):
 
     def isdisjoint(self, s: Iterable[T]) -> bool:
         """Return whether this set is disjoint with *s*."""
-        return self._dict.keys().isdisjoint(s)
+        return self._dict.keys().isdisjoint(s)  # pylint: disable=no-member
 
     def issubset(self, s: Iterable[T]) -> bool:
         """Return whether this set is a subset of *s*."""
