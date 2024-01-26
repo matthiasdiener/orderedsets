@@ -36,9 +36,13 @@ except ModuleNotFoundError:  # pragma: no cover
 __version__ = importlib_metadata.version(__package__ or __name__)
 
 from collections.abc import Iterator, Set
-from typing import AbstractSet, Any, Iterable, Optional, TypeVar
+from typing import AbstractSet, Any, Iterable, Optional, Type, TypeVar, Union
 
 T = TypeVar("T")
+
+
+class _NotProvided:
+    pass
 
 
 class OrderedSet(AbstractSet[T]):
@@ -48,15 +52,15 @@ class OrderedSet(AbstractSet[T]):
     desired.
     """
 
-    def __init__(self, *args: Any) -> None:
-        """Create a new :class:`OrderedSet`, optionally initialized with *args*."""
-        if len(args) > 1:
-            raise TypeError("OrderedSet expected at most 1 argument, got ",
-                            len(args))
-        elif len(args) == 0:
+    def __init__(self, items: Union[Iterable[T], Type[_NotProvided]] = _NotProvided)\
+            -> None:
+        """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
+        if items is _NotProvided:
             self._dict: dict[T, None] = {}
         else:
-            self._dict = dict.fromkeys(*args)
+            # type-ignore-reason:
+            # mypy thinks 'items' can still be Type[_NotProvided] here.
+            self._dict = dict.fromkeys(items)  # type: ignore[arg-type]
 
     def __eq__(self, other: object) -> bool:
         """Return whether this set is equal to *other*."""
@@ -220,16 +224,16 @@ class FrozenOrderedSet(AbstractSet[T]):
     ordering is desired.
     """
 
-    def __init__(self, *args: Any) -> None:
+    def __init__(self, items: Union[Iterable[T], Type[_NotProvided]] = _NotProvided)\
+            -> None:
         """Create a new :class:`FrozenOrderedSet`, optionally initialized \
-           with *args*."""
-        if len(args) > 1:
-            raise TypeError("FrozenOrderedSet expected at most 1 argument, got ",
-                            len(args))
-        elif len(args) == 0:
+            with *items*."""
+        if items == _NotProvided:
             self._dict: dict[T, None] = {}
         else:
-            self._dict = dict.fromkeys(*args)
+            # type-ignore-reason:
+            # mypy thinks 'items' can still be Type[_NotProvided] here.
+            self._dict = dict.fromkeys(items)  # type: ignore[arg-type]
 
         self._my_hash: Optional[int] = None
 
