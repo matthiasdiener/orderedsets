@@ -56,7 +56,7 @@ class OrderedSet(AbstractSet[T]):
             -> None:
         """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
         if items is _NotProvided:
-            self._dict: dict[T, None] = {}
+            self._dict = {}
         else:
             # type-ignore-reason:
             # mypy thinks 'items' can still be Type[_NotProvided] here.
@@ -228,8 +228,8 @@ class FrozenOrderedSet(AbstractSet[T]):
             -> None:
         """Create a new :class:`FrozenOrderedSet`, optionally initialized \
             with *items*."""
-        if items == _NotProvided:
-            self._dict: dict[T, None] = {}
+        if items is _NotProvided:
+            self._dict = {}
         else:
             # type-ignore-reason:
             # mypy thinks 'items' can still be Type[_NotProvided] here.
@@ -298,7 +298,7 @@ class FrozenOrderedSet(AbstractSet[T]):
 
     def isdisjoint(self, s: Iterable[T]) -> bool:
         """Return whether this set is disjoint with *s*."""
-        return self._dict.keys().isdisjoint(s)
+        return self._dict.keys().isdisjoint(s)  # pylint: disable=no-member
 
     def issubset(self, s: Iterable[T]) -> bool:
         """Return whether this set is a subset of *s*."""
