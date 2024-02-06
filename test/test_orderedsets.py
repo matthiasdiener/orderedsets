@@ -270,6 +270,14 @@ def test_intersection(_cls: T_set[int]) -> None:
     assert s1 == s1.intersection(s1)
 
 
+@all_set_types
+def test_intersection_multiple_args(_cls: T_set[int]) -> None:
+    s1 = _cls([3, 1, 2])
+    s2 = _cls([1, 7])
+    assert _cls([1]) == s1.intersection(s2, s2)
+    assert s1 == s1.intersection(s1, s1)
+
+
 @all_immutable_set_types
 def test_intersection_update_immutable(_cls: T_immutable_set[int]) -> None:
     s1 = _cls([3, 1, 2])
@@ -322,6 +330,14 @@ def test_difference(_cls: T_set[int]) -> None:
     assert s1.difference(s1) == _cls()
 
 
+@all_set_types
+def test_difference_multiple_args(_cls: T_set[int]) -> None:
+    s1 = _cls([3, 1, 2])
+    s2 = _cls([1, 7])
+    assert _cls([3, 2]) == s1.difference(s2, s2)
+    assert s1.difference(s1, s1) == _cls()
+
+
 @all_immutable_set_types
 def test_difference_update_immutable(_cls: T_immutable_set[int]) -> None:
     s1 = _cls([3, 1, 2])
@@ -372,6 +388,15 @@ def test_union(_cls: T_set[int]) -> None:
     s3 = _cls([42])
     assert _cls([1, 3, 2, 7]) == s1.union(s2)
     assert _cls([1, 3, 2, 42]) == s1.union(s3)
+
+
+@all_set_types
+def test_union_multiple_args(_cls: T_set[int]) -> None:
+    s1 = _cls([3, 1, 2])
+    s2 = _cls([1, 7])
+    s3 = _cls([42])
+    assert _cls([1, 3, 2, 7]) == s1.union(s2, s2)
+    assert _cls([1, 3, 2, 42]) == s1.union(s3, s3)
 
 
 @all_set_types
