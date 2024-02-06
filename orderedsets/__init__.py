@@ -36,7 +36,7 @@ except ModuleNotFoundError:  # pragma: no cover
 __version__ = importlib_metadata.version(__package__ or __name__)
 
 from collections.abc import Iterator, Set
-from typing import AbstractSet, Any, Iterable, Optional, Type, TypeVar, Union
+from typing import AbstractSet, Any, Iterable, Optional, Type, TypeVar, Union, FrozenSet
 
 T = TypeVar("T")
 
@@ -45,7 +45,7 @@ class _NotProvided:
     pass
 
 
-class OrderedSet(AbstractSet[T]):
+class OrderedSet(set):
     """A set class that preserves insertion order.
 
     It can be used as a drop-in replacement for :class:`set` where ordering is
@@ -55,6 +55,7 @@ class OrderedSet(AbstractSet[T]):
     def __init__(self, items: Union[Iterable[T], Type[_NotProvided]] = _NotProvided)\
             -> None:
         """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
+        print("init", items)
         if items is _NotProvided:
             self._dict = {}
         else:
@@ -62,11 +63,20 @@ class OrderedSet(AbstractSet[T]):
             # mypy thinks 'items' can still be Type[_NotProvided] here.
             self._dict = dict.fromkeys(items)  # type: ignore[arg-type]
 
+    def __new__(cls, *args: Any, **kwargs: Any) -> OrderedSet[T]:
+        333/0
+
     def __eq__(self, other: object) -> bool:
         """Return whether this set is equal to *other*."""
-        return (isinstance(other, Set)
+        print("eq", self, other)
+        return (isinstance(other, AbstractSet)
                 and len(self) == len(other)
                 and all(i in other for i in self))
+
+
+    def __ne__(self, other: object) -> bool:
+        """Return whether this set is not equal to *other*."""
+        return not self.__eq__(other)
 
     def __repr__(self) -> str:
         """Return a string representation of this set."""
@@ -156,6 +166,9 @@ class OrderedSet(AbstractSet[T]):
         """Return whether *o* is in this set."""
         return o in self._dict
 
+    def __getitem__(self, i: int) -> T:
+        444/0
+
     def __iter__(self) -> Iterator[T]:
         """Return an iterator over the elements of this set."""
         return iter(self._dict)
@@ -217,7 +230,7 @@ class OrderedSet(AbstractSet[T]):
         return len(self) > len(s) and set(self) > set(s)
 
 
-class FrozenOrderedSet(AbstractSet[T]):
+class FrozenOrderedSet(frozenset):
     """A frozen set class that preserves insertion order.
 
     It can be used as a drop-in replacement for :class:`frozenset` where
