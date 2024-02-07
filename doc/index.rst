@@ -24,6 +24,7 @@ API reference
    :maxdepth: 1
 
    OrderedSets
+   api
 
    🚀 Github <https://github.com/matthiasdiener/orderedsets>
    💾 Download Releases <https://pypi.org/project/orderedsets>

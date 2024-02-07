@@ -52,8 +52,7 @@ def test_speed(statement: str, _setup: str, max_slowdown_factor: float,
         os_time = timeit(statement,
                          setup="from orderedsets import OrderedSet as set;" + _setup,
                          number=10000)
-        print(s_time)
-        print(os_time)
+        print(f"{statement} {s_time=} {os_time=}")
 
         assert os_time < max_slowdown_factor * s_time
 
@@ -65,7 +64,6 @@ def test_speed(statement: str, _setup: str, max_slowdown_factor: float,
                           + _setup,
                           number=10000)
 
-        print(fs_time)
-        print(fos_time)
+        print(f"{statement} {fs_time=} {fos_time=}")
 
         assert fos_time < max_slowdown_factor * fs_time
