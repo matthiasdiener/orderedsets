@@ -18,6 +18,7 @@ jobs:
         python-version: '3.8'
     - name: Flake8 test
       run: |
+        set -x
         python -m pip install flake8 pep8-naming flake8-quotes flake8-bugbear flake8-pyproject flake8-isort
         python -m flake8 --show-source --statistics "$(basename $GITHUB_REPOSITORY)" test doc examples && echo "Flake8 found no errors."
 
@@ -31,6 +32,7 @@ jobs:
         python-version: '3.x'
     - name: Run mypy
       run: |
+        set -x
         python -m pip install mypy pytest importlib_metadata
         python -m pip install -e .
         ./run-mypy.sh
@@ -44,6 +46,7 @@ jobs:
         python-version: '3.x'
     - name: Run Pylint
       run: |
+        set -x
         python -m pip install pylint PyYAML pytest
         python -m pip install -e .
         ./run-pylint.sh
@@ -57,6 +60,7 @@ jobs:
           python-version: '3.x'
       - name: Run Pydocstyle
         run: |
+          set -x
           python -m pip install pydocstyle
           python -m pydocstyle "$(basename $GITHUB_REPOSITORY)" && echo "pydocstyle found no errors."
 
@@ -75,6 +79,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Run Pytest
       run: |
+        set -x
         python -m pip install pytest pytest-cov
         python -m pip install -e .
         cd test
@@ -95,6 +100,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Run examples
       run: |
+        set -x
         python -m pip install -e .
         cd examples
         for f in *.py; do echo Running $f; python $f; done
