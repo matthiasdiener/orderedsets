@@ -24,7 +24,8 @@ SOFTWARE.
 """
 
 
-from typing import AbstractSet, Any, FrozenSet, Generator, Set, Type, TypeVar, Union
+from typing import (AbstractSet, Any, FrozenSet, Generator, Set, Type, TypeVar,
+                    Union)
 
 import pytest
 
@@ -316,6 +317,9 @@ def test_intersection(_cls: T_set[str]) -> None:
         assert list(s1.intersection(["a", "b", "c"])) == ["c", "a", "b"]
         assert list(s1.intersection(["b", "a"])) == ["a", "b"]
 
+    assert s1.intersection() == s1
+    assert s1.intersection([]) == _cls()
+
 
 @all_set_types
 def test_intersection_multiple_args(_cls: T_set[str]) -> None:
@@ -345,6 +349,12 @@ def test_intersection_update_mutable(_cls: T_mutable_set[str]) -> None:
 
     s1.intersection_update(s2)
     assert _cls(["a"]) == s1
+
+    s1.intersection_update()
+    assert _cls(["a"]) == s1
+
+    s1.intersection_update([])
+    assert _cls() == s1
 
     if _cls in ordered_set_types:
         s3 = _cls(["c", "a", "b"])

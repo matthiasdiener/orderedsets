@@ -108,7 +108,7 @@ class OrderedSet(AbstractSet[T]):
     def intersection(self, *others: Iterable[T]) -> OrderedSet[T]:
         """Return the intersection of this set and *others*."""
         if not others:
-            return OrderedSet()
+            return OrderedSet(self._dict)
 
         result_elements = []
         for element in self._dict.keys():
@@ -120,7 +120,6 @@ class OrderedSet(AbstractSet[T]):
     def intersection_update(self, *others: Iterable[T]) -> None:
         """Update this set to be the intersection of itself and *others*."""
         if not others:
-            self._dict.clear()
             return
 
         common_keys = list(self._dict.keys())
@@ -325,7 +324,7 @@ class FrozenOrderedSet(AbstractSet[T]):
     def intersection(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
         """Return the intersection of this set and *others*."""
         if not others:
-            return FrozenOrderedSet()
+            return FrozenOrderedSet(self._dict)
 
         result_elements = []
         for element in self._dict.keys():
