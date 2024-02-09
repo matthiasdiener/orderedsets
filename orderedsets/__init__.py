@@ -163,13 +163,8 @@ class OrderedSet(AbstractSet[T]):
 
     def union(self, *others: Iterable[T]) -> OrderedSet[T]:
         """Return the union of this set and *others*."""
-        new_elements = list(self._dict.keys())
-
-        for other in others:
-            for element in other:
-                new_elements.append(element)
-
-        return OrderedSet(new_elements)
+        return OrderedSet(list(self._dict)
+                          + [e for other in others for e in other])
 
     def update(self, *others: Iterable[T]) -> None:
         """Update this set to be the union of itself and *others*."""
