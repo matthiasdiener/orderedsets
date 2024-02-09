@@ -91,7 +91,7 @@ class OrderedSet(AbstractSet[T]):
         if not others:
             return OrderedSet(self._dict)
         other_elems = set.union(*map(set, others))
-        items = (item for item in self if item not in other_elems)
+        items = {item: None for item in self if item not in other_elems}
         return OrderedSet(items)
 
     def difference_update(self, *others: Iterable[T]) -> None:
@@ -124,12 +124,9 @@ class OrderedSet(AbstractSet[T]):
 
         common_keys = list(self._dict.keys())
         for other in others:
-            other_keys = list(other)
-            common_keys = [key for key in common_keys if key in other_keys]
+            common_keys = [key for key in common_keys if key in set(other)]
 
-        keys_to_remove = [key for key in self._dict.keys() if key not in common_keys]
-        for key in keys_to_remove:
-            del self._dict[key]
+        self._dict = dict.fromkeys(common_keys)
 
     def isdisjoint(self, s: Iterable[T]) -> bool:
         """Return whether this set is disjoint with *s*."""
