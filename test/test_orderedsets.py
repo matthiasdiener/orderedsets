@@ -100,10 +100,14 @@ def test_init(_cls: T_set[str]) -> None:
 
     # String is iterable, so this should pass
     s = _cls("d")
+    assert s == {"d"}
 
     # Invalid multi-item init
     with pytest.raises(TypeError):
         s = _cls("a", "b")  # type: ignore[call-overload,call-arg]
+
+    with pytest.raises(TypeError):
+        s = _cls([], [])  # type: ignore[call-overload,call-arg]
 
 
 @all_set_types
