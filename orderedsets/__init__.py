@@ -343,13 +343,8 @@ class FrozenOrderedSet(AbstractSet[T]):
 
     def union(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
         """Return the union of this set and *others*."""
-        new_elements = list(self._dict.keys())
-
-        for other in others:
-            for element in other:
-                new_elements.append(element)
-
-        return FrozenOrderedSet(new_elements)
+        return FrozenOrderedSet(list(self._dict)
+                                + [e for other in others for e in other])
 
     def __and__(self, s: Set[T]) -> FrozenOrderedSet[T]:
         """Return the intersection of this set and *s*."""
