@@ -2,6 +2,10 @@ General Set API
 ===============
 
 
+Inherited methods
+=================
+
+
 From the `Python documentation <https://docs.python.org/3.12/library/collections.abc.html>`__.
 
 
@@ -24,3 +28,18 @@ From the `Python documentation <https://docs.python.org/3.12/library/collections
 +------------------------------------------------+----------------+-------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``typing.FrozenSet`` (deprecated since 3.9)    |                |                                                                   |                                                                                                                                                                                                                                                                                                           |
 +------------------------------------------------+----------------+-------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+Subclassing
+-----------
+
+```python
+from typing import (FrozenSet as tp_FrozenSet, Set as tp_Set, MutableSet as tp_MutableSet)
+from collections.abc import Set as abc_FrozenSet, MutableSet as abc_Set
+
+assert isinstance(set(), abc_Set)
+assert isinstance(frozenset(), abc_FrozenSet)
+assert isinstance(set(), tp_Set)
+assert isinstance(frozenset(), tp_FrozenSet)
+assert isinstance(set(), tp_MutableSet)
+```
