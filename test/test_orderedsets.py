@@ -122,11 +122,12 @@ def test_simple_ordered(_cls: T_ordered_set[str]) -> None:
 
 
 @all_set_types
-def test_str_repr(_cls: T_ordered_set[Any]) -> None:
-    cls_name = "" if issubclass(_cls, set) else _cls.__name__ + "("
-    end = "" if issubclass(_cls, set) else ")"
+def test_str_repr(_cls: T_set[Any]) -> None:
+    cls_name = "" if _cls == set else _cls.__name__ + "("
+    end = "" if _cls == set else ")"
 
     s = _cls([1])
+    print(repr(s), str(s), cls_name + "{'d'}" + end)
     assert repr(s) == str(s) == cls_name + "{1}" + end
 
     s = _cls(["d"])
@@ -134,7 +135,7 @@ def test_str_repr(_cls: T_ordered_set[Any]) -> None:
 
     s = _cls()
     assert repr(s) == str(s) \
-        == "set()" if issubclass(_cls, set) else f"{cls_name}" + end
+        == "set()" if _cls == set else f"{cls_name}" + end
 
     if _cls in ordered_set_types:
         s = _cls([1, 4, 1, 4])
@@ -242,6 +243,7 @@ def test_clear_mutable(_cls: T_mutable_set[str]) -> None:
 @all_set_types
 def test_convert_to_set(_cls: T_set[int]) -> None:
     assert {1, 2, 3} == set(_cls([3, 1, 2]))
+    assert {1, 2, 3} == frozenset(_cls([3, 1, 2]))
 
 
 @all_ordered_set_types
@@ -654,11 +656,14 @@ def test_issubset(_cls: T_set[int]) -> None:
         assert s2.issubset(s1)
 
 
-@all_set_types
+@all_ordered_set_types
 def test_issuperset(_cls: T_set[int]) -> None:
     s1 = _cls([3, 1, 2])
     s2 = _cls([1, 7])
     assert not s1.issuperset(s2)
+
+    s3 = _cls([1, 2])
+    assert s1.issuperset(s3)
 
     if _cls in mutable_set_types:
         s2.discard(7)  # type: ignore[union-attr]
@@ -776,16 +781,94 @@ def test_ordering(_cls: T_set[int]) -> None:
     # assert not (oset3 >= list(oset4))
 
 
-@all_ordered_set_types
-def test_isinstance(_cls: T_ordered_set[int]) -> None:
-    assert isinstance(_cls(), AbstractSet)
-    assert not isinstance(_cls(), Set)
-    assert not isinstance(_cls(), set)
-    assert not isinstance(_cls(), frozenset)
+@all_set_types
+def test_isinstance(_cls: T_set[int]) -> None:
+    # Note that some tests appear multiple times, this is intentional.
 
-    if _cls in mutable_set_types:
-        assert isinstance(_cls(), OrderedSet)
+    from collections.abc import MutableSet as abc_MutableSet
+    from collections.abc import Set as abc_Set
+
+    # All of the following imports from 'typing' are deprecated as of Python 3.9
+    from typing import AbstractSet as tp_AbstractSet
+    from typing import FrozenSet as tp_FrozenSet
+    from typing import MutableSet as tp_MutableSet
+    from typing import Set as tp_Set
+
+    # set
+    if _cls == set:
+        assert isinstance(set(), tp_AbstractSet)
+        assert isinstance(set(), tp_Set)
+        assert isinstance(set(), tp_MutableSet)
+        assert not isinstance(set(), tp_FrozenSet)
+        assert isinstance(set(), abc_Set)
+        assert isinstance(set(), abc_MutableSet)
+
+        assert isinstance(_cls(), set)
+        assert not isinstance(_cls(), frozenset)
+
+        assert not isinstance(_cls(), OrderedSet)
         assert not isinstance(_cls(), FrozenOrderedSet)
-    else:
+
+    # OrderedSet
+    if _cls == OrderedSet:
+        assert isinstance(OrderedSet(), tp_AbstractSet)
+        # assert isinstance(OrderedSet(), tp_Set)
+        assert isinstance(OrderedSet(), tp_MutableSet)
+        assert not isinstance(OrderedSet(), tp_FrozenSet)
+        assert isinstance(OrderedSet(), abc_Set)
+        assert isinstance(OrderedSet(), abc_MutableSet)
+
+        # assert isinstance(_cls(), set)
+        assert not isinstance(_cls(), frozenset)
+
+        assert isinstance(_cls(), OrderedSet)
+        # assert not isinstance(_cls(), FrozenOrderedSet)
+
+    # frozenset
+    if _cls == frozenset:
+        assert isinstance(frozenset(), tp_AbstractSet)
+        assert not isinstance(frozenset(), tp_Set)
+        assert not isinstance(frozenset(), tp_MutableSet)
+        assert isinstance(frozenset(), tp_FrozenSet)
+        assert isinstance(frozenset(), abc_Set)
+        assert not isinstance(frozenset(), abc_MutableSet)
+
+        assert not isinstance(_cls(), set)
+        assert isinstance(_cls(), frozenset)
+
+        assert not isinstance(_cls(), OrderedSet)
+        assert not isinstance(_cls(), FrozenOrderedSet)
+
+    # FrozenOrderedSet
+    if _cls == FrozenOrderedSet:
+        assert isinstance(FrozenOrderedSet(), tp_AbstractSet)
+        assert not isinstance(FrozenOrderedSet(), tp_Set)
+        assert not isinstance(FrozenOrderedSet(), tp_MutableSet)
+        # assert isinstance(FrozenOrderedSet(), tp_FrozenSet)
+        assert isinstance(FrozenOrderedSet(), abc_Set)
+        assert not isinstance(FrozenOrderedSet(), abc_MutableSet)
+
+        assert not isinstance(_cls(), set)
+        # assert isinstance(_cls(), frozenset)
+
         assert not isinstance(_cls(), OrderedSet)
         assert isinstance(_cls(), FrozenOrderedSet)
+
+    assert isinstance(_cls(), tp_AbstractSet)
+    assert isinstance(_cls(), abc_Set)
+    assert isinstance(_cls(), AbstractSet)
+
+    if _cls in mutable_set_types:
+        # assert isinstance(_cls(), Set)
+        # assert isinstance(_cls(), set)
+        assert not isinstance(_cls(), frozenset)
+        if _cls in ordered_set_types:
+            assert isinstance(_cls(), OrderedSet)
+            # assert not isinstance(_cls(), FrozenOrderedSet)
+    else:
+        assert not isinstance(_cls(), Set)
+        assert not isinstance(_cls(), set)
+        # assert isinstance(_cls(), frozenset)
+        if _cls in ordered_set_types:
+            assert not isinstance(_cls(), OrderedSet)
+            assert isinstance(_cls(), FrozenOrderedSet)
