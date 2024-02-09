@@ -72,7 +72,7 @@ class OrderedSet(AbstractSet[T]):
         """Return a string representation of this set."""
         if len(self) == 0:
             return "OrderedSet()"
-        return "OrderedSet({" + ", ".join(list(map(str, self._dict))) + "})"
+        return "OrderedSet({" + ", ".join([repr(k) for k in self._dict]) + "})"
 
     def add(self, element: T) -> None:
         """Add *element* to this set."""
@@ -86,28 +86,26 @@ class OrderedSet(AbstractSet[T]):
         """Return a shallow copy of this set."""
         return OrderedSet(self._dict.copy())
 
-    def difference(self, *others) -> OrderedSet[T]:
-        """Return the difference of this set and *others*."""
-        result_elements = list(self._dict.keys())
+    def difference(self, *others: Iterable[T]) -> OrderedSet[T]:
+        """Return all elements that are in this set but not in *others*."""
+        if not others:
+            return OrderedSet(self._dict)
+        other_elems = set.union(*map(set, others))
+        items = (item for item in self if item not in other_elems)
+        return OrderedSet(items)
 
+    def difference_update(self, *others: Iterable[T]) -> None:
+        """Update this set to remove all items that are in *others*."""
         for other in others:
-            result_elements = [element for element in result_elements if element not in other]
-
-        return OrderedSet(result_elements)
-
-    def difference_update(self, *others) -> None:
-        """Update this set to be the difference of itself and *others*."""
-        for other in others:
-            keys_to_remove = [key for key in other if key in self._dict]
-            for key in keys_to_remove:
-                del self._dict[key]
+            for e in other:
+                self.discard(e)
 
     def discard(self, element: T) -> None:
         """Remove *element* from this set, if it is present."""
         if element in self._dict:
             del self._dict[element]
 
-    def intersection(self, *others) -> OrderedSet[T]:
+    def intersection(self, *others: Iterable[T]) -> OrderedSet[T]:
         """Return the intersection of this set and *others*."""
         if not others:
             return OrderedSet()
@@ -119,7 +117,7 @@ class OrderedSet(AbstractSet[T]):
 
         return OrderedSet(result_elements)
 
-    def intersection_update(self, *others) -> None:
+    def intersection_update(self, *others: Iterable[T]) -> None:
         """Update this set to be the intersection of itself and *others*."""
         if not others:
             self._dict.clear()
@@ -167,7 +165,7 @@ class OrderedSet(AbstractSet[T]):
         """Update this set to be the symmetric difference of itself and *s*."""
         self._dict = self.symmetric_difference(s)._dict
 
-    def union(self, *others) -> OrderedSet[T]:
+    def union(self, *others: Iterable[T]) -> OrderedSet[T]:
         """Return the union of this set and *others*."""
         new_elements = list(self._dict.keys())
 
@@ -177,8 +175,8 @@ class OrderedSet(AbstractSet[T]):
 
         return OrderedSet(new_elements)
 
-    def update(self, *others) -> None:
-        """Update this set to be the union of itself and *s*."""
+    def update(self, *others: Iterable[T]) -> None:
+        """Update this set to be the union of itself and *others*."""
         self._dict = self.union(*others)._dict
 
     def __len__(self) -> int:
@@ -296,7 +294,7 @@ class FrozenOrderedSet(AbstractSet[T]):
         """Return a string representation of this set."""
         if len(self) == 0:
             return "FrozenOrderedSet()"
-        return "FrozenOrderedSet({" + ", ".join(list(map(str, self._dict))) + "})"
+        return "FrozenOrderedSet({" + ", ".join([repr(k) for k in self._dict]) + "})"
 
     def __len__(self) -> int:
         """Return the number of elements in this set."""
@@ -314,17 +312,18 @@ class FrozenOrderedSet(AbstractSet[T]):
         """Return a shallow copy of this set."""
         return FrozenOrderedSet(self._dict)
 
-    def difference(self, *others) -> FrozenOrderedSet[T]:
-        """Return the difference of this set and *s*."""
+    def difference(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
+        """Return the difference of this set and *others*."""
         result_elements = list(self._dict.keys())
 
         for other in others:
-            result_elements = [element for element in result_elements if element not in other]
+            result_elements = [element for element in result_elements
+                               if element not in other]
 
         return FrozenOrderedSet(result_elements)
 
-    def intersection(self, *others) -> FrozenOrderedSet[T]:
-        """Return the intersection of this set and *s*."""
+    def intersection(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
+        """Return the intersection of this set and *others*."""
         if not others:
             return FrozenOrderedSet()
 
@@ -353,8 +352,8 @@ class FrozenOrderedSet(AbstractSet[T]):
         """Return whether this set is a superset of *s*."""
         return set(self).issuperset(set(s))
 
-    def union(self, *others) -> FrozenOrderedSet[T]:
-        """Return the union of this set and *s*."""
+    def union(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
+        """Return the union of this set and *others*."""
         new_elements = list(self._dict.keys())
 
         for other in others:
