@@ -305,13 +305,11 @@ class FrozenOrderedSet(AbstractSet[T]):
 
     def difference(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
         """Return the difference of this set and *others*."""
-        result_elements = list(self._dict.keys())
-
-        for other in others:
-            result_elements = [element for element in result_elements
-                               if element not in other]
-
-        return FrozenOrderedSet(result_elements)
+        if not others:
+            return FrozenOrderedSet(self._dict)
+        other_elems = set.union(*map(set, others))
+        items = {item: None for item in self if item not in other_elems}
+        return FrozenOrderedSet(items)
 
     def intersection(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
         """Return the intersection of this set and *others*."""
