@@ -101,7 +101,9 @@ class OrderedSet(AbstractSet[T]):
                 self.discard(e)
 
     def discard(self, element: T) -> None:
-        """Remove *element* from this set, if it is present."""
+        """Remove *element* from this set if it is present."""
+        # try/except and self._dict.pop(element, None) seem to be slower than this,
+        # independent of whether 'element' is present or not.
         if element in self._dict:
             del self._dict[element]
 
