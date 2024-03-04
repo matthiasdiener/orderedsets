@@ -45,51 +45,107 @@ class _NotProvided:
     pass
 
 
-class OrderedSet(AbstractSet[T]):
+from collections import defaultdict
+from functools import partialmethod
+
+class OrderedSet(dict, AbstractSet[T]):
     """A set class that preserves insertion order.
 
     It can be used as a drop-in replacement for :class:`set` where ordering is
     desired.
     """
+    # def __new__(cls, *args: Any, **kwargs: Any)\
+    #         -> None:
+    #     """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
+    #     inst = super().__new__(cls)
+    #     # inst.update(dict.fromkeys(*args, **kwargs))
+    #     # inst = dict.fromkeys(*args, **kwargs)
+    #     return inst
+    #     super().__init__(None)
+    #     if items is _NotProvided:
+    #         self._dict = {}
+    #     else:
+    #         # type-ignore-reason:
+    #         # mypy thinks 'items' can still be Type[_NotProvided] here.
+    #         self._dict = dict.fromkeys(items)
 
-    def __init__(self, items: Union[Iterable[T], Type[_NotProvided]] = _NotProvided)\
+    def __init__(self, *args: Any, **kwargs: Any)\
             -> None:
         """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
-        if items is _NotProvided:
-            self._dict = {}
-        else:
+
+        # if items is _NotProvided:
+        #     self = {}
+        # else:
             # type-ignore-reason:
             # mypy thinks 'items' can still be Type[_NotProvided] here.
-            self._dict = dict.fromkeys(items)  # type: ignore[arg-type]
+        if len(args) > 1:
+            raise TypeError
+        if args or kwargs:
+            super().__init__(dict.fromkeys(*args, **kwargs))  # type: ignore[arg-type]
+        else:
+            super().__init__()
+            # print(self, list(self))
+
+    add = dict.setdefault
+    remove = dict.pop
+    # __eq__ = frozenset.__ eq__
+
+    pop = lambda self: self.popitem()[0]
+    # union = dict.__ior__
+    # update = dict.update
+    # isdisjoint = partialmethod(frozenset.isdisjoint, self.keys())
+
+    # list = dict.list
+
+    # def add(self, element: T) -> None:
+    #     """Add *element* to this set."""
+    #     self._dict = {**self._dict, **{element: None}}
+
+    # __init__ = None
+    # __init__ = dict.fromkeys
+
+    # def __init__(self, items: Union[Iterable[T], Type[_NotProvided]] = _NotProvided)\
+    #         -> None:
+    #     """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
+    #     if items is _NotProvided:
+    #         self._dict = {}
+    #     else:
+    #         # type-ignore-reason:
+    #         # mypy thinks 'items' can still be Type[_NotProvided] here.
+    #         self._dict = dict.fromkeys(items)  # type: ignore[arg-type]
 
     def __eq__(self, other: object) -> bool:
         """Return whether this set is equal to *other*."""
-        return (isinstance(other, Set)
-                and len(self) == len(other)
-                and all(i in other for i in self))
+        return self.keys() == other
 
     def __repr__(self) -> str:
         """Return a string representation of this set."""
         if len(self) == 0:
             return "OrderedSet()"
-        return "OrderedSet({" + ", ".join([repr(k) for k in self._dict]) + "})"
+        return "OrderedSet({" + ", ".join([repr(k) for k in self]) + "})"
 
-    def add(self, element: T) -> None:
-        """Add *element* to this set."""
-        self._dict = {**self._dict, **{element: None}}
+    # def add(self, element: T) -> None:
+    #     """Add *element* to this set."""
+    #     self._dict = {**self._dict, **{element: None}}
 
-    def clear(self) -> None:
-        """Remove all elements from this set."""
-        self._dict.clear()
+    # def clear(self) -> None:
+    #     """Remove all elements from this set."""
+    #     self._dict.clear()
+
+    def discard(self, element: T) -> None:
+        """Remove *element* from this set if it is present."""
+        if element in self:
+            del self[element]
+        # self.pop(element, None)
 
     def copy(self) -> OrderedSet[T]:
         """Return a shallow copy of this set."""
-        return OrderedSet(self._dict.copy())
+        return OrderedSet(self)
 
     def difference(self, *others: Iterable[T]) -> OrderedSet[T]:
         """Return all elements that are in this set but not in *others*."""
         if not others:
-            return OrderedSet(self._dict)
+            return OrderedSet(self)
         other_elems = set.union(*map(set, others))
         items = {item: None for item in self if item not in other_elems}
         return OrderedSet(items)
@@ -100,18 +156,13 @@ class OrderedSet(AbstractSet[T]):
             for e in other:
                 self.discard(e)
 
-    def discard(self, element: T) -> None:
-        """Remove *element* from this set, if it is present."""
-        if element in self._dict:
-            del self._dict[element]
-
     def intersection(self, *others: Iterable[T]) -> OrderedSet[T]:
         """Return the intersection of this set and *others*."""
         if not others:
-            return OrderedSet(self._dict)
+            return OrderedSet(self)
 
         result_elements = []
-        for element in self._dict.keys():
+        for element in self.keys():
             if all(element in other for other in others):
                 result_elements.append(element)
 
@@ -122,105 +173,111 @@ class OrderedSet(AbstractSet[T]):
         if not others:
             return
 
-        common_keys = list(self._dict.keys())
+        common_keys = self.keys()
         for other in others:
-            common_keys = [key for key in common_keys if key in set(other)]
+            common_keys = [key for key in common_keys if key in other]
 
-        self._dict = dict.fromkeys(common_keys)
+        self.clear()
+        self.update(common_keys)
 
     def isdisjoint(self, s: Iterable[T]) -> bool:
         """Return whether this set is disjoint with *s*."""
-        return self._dict.keys().isdisjoint(s)
+        return self.keys().isdisjoint(s)
 
     def issubset(self, s: Iterable[T]) -> bool:
         """Return whether this set is a subset of *s*."""
-        return all(i in s for i in self)
+        return set(self).issubset(s)
 
     def issuperset(self, s: Iterable[T]) -> bool:
         """Return whether this set is a superset of *s*."""
         return set(self).issuperset(set(s))
 
-    def pop(self) -> T:
-        """Remove and return the most recently added element from this set."""
-        items = list(self._dict)
-        result = items.pop()
-        self._dict = dict.fromkeys(items)
-        return result
+    # def pop(self) -> T:
+    #     """Remove and return the most recently added element from this set."""
+    #     items = list(self._dict)
+    #     result = items.pop()
+    #     self._dict = dict.fromkeys(items)
+    #     return result
 
-    def remove(self, element: T) -> None:
-        """Remove *element* from this set, raising :exc:`KeyError` if not present."""
-        del self._dict[element]
+    # def remove(self, element: T) -> None:
+    #     """Remove *element* from this set, raising :exc:`KeyError` if not present."""
+    #     del self._dict[element]
 
     def symmetric_difference(self, s: Iterable[T]) -> OrderedSet[T]:
         """Return the symmetric difference of this set and *s*."""
         return OrderedSet(
-            dict.fromkeys([e for e in self._dict if e not in s]
-                          + [e for e in s if e not in self._dict]))
+            dict.fromkeys([e for e in self if e not in s]
+                          + [e for e in s if e not in self]))
 
     def symmetric_difference_update(self, s: Iterable[T]) -> None:
         """Update this set to be the symmetric difference of itself and *s*."""
-        self._dict = self.symmetric_difference(s)._dict
+        x = self.symmetric_difference(s)
+        self.clear()
+        self.update(x)
 
     def union(self, *others: Iterable[T]) -> OrderedSet[T]:
         """Return the union of this set and *others*."""
-        return OrderedSet(list(self._dict)
+        return OrderedSet(list(self)
                           + [e for other in others for e in other])
 
     def update(self, *others: Iterable[T]) -> None:
         """Update this set to be the union of itself and *others*."""
-        self._dict = self.union(*others)._dict
+        x = self | dict.fromkeys(*others)
+        self.clear()
+        for e in x:
+            self.add(e)
 
-    def __len__(self) -> int:
-        """Return the number of elements in this set."""
-        return len(self._dict)
+    # def __len__(self) -> int:
+    #     """Return the number of elements in this set."""
+    #     return len(self._dict)
 
-    def __contains__(self, o: object) -> bool:
-        """Return whether *o* is in this set."""
-        return o in self._dict
+    # def __contains__(self, o: object) -> bool:
+    #     """Return whether *o* is in this set."""
+    #     return o in self._dict
 
-    def __iter__(self) -> Iterator[T]:
-        """Return an iterator over the elements of this set."""
-        return iter(self._dict)
+    # def __iter__(self) -> Iterator[T]:
+    #     """Return an iterator over the elements of this set."""
+    #     return iter(self._dict)
 
     def __and__(self, s: Set[T]) -> OrderedSet[T]:
         """Return the intersection of this set and *s*."""
         return self.intersection(s)
 
-    def __iand__(self, s: Set[T]) -> OrderedSet[T]:
-        """Update this set to be the intersection of itself and *s*."""
-        result = self.intersection(s)
-        self._dict = result._dict
-        return result
+    # def __iand__(self, s: Set[T]) -> OrderedSet[T]:
+    #     """Update this set to be the intersection of itself and *s*."""
+    #     result = self.intersection(s)
+    #     self._dict = result._dict
+    #     return result
 
     def __or__(self, s: Set[Any]) -> OrderedSet[T]:
         """Return the union of this set and *s*."""
         return self.union(s)
 
-    def __ior__(self, s: Set[Any]) -> OrderedSet[T]:
-        """Update this set to be the union of itself and *s*."""
-        result = self.union(s)
-        self._dict = result._dict
-        return result
+    # def __ior__(self, s: Set[Any]) -> OrderedSet[T]:
+    #     """Update this set to be the union of itself and *s*."""
+    #     result = self.union(s)
+    #     self._dict = result._dict
+    #     return result
 
-    def __sub__(self, s: Set[T]) -> OrderedSet[T]:
-        """Return the difference of this set and *s*."""
-        return self.difference(s)
+    # def __sub__(self, s: Set[T]) -> OrderedSet[T]:
+    #     """Return the difference of this set and *s*."""
+    #     return self.difference(s)
 
-    def __isub__(self, s: Set[T]) -> OrderedSet[T]:
-        """Update this set to be the difference of itself and *s*."""
-        result = self.difference(s)
-        self._dict = result._dict
-        return result
+    # def __isub__(self, s: Set[T]) -> OrderedSet[T]:
+    #     """Update this set to be the difference of itself and *s*."""
+    #     result = self.difference(s)
+    #     self._dict = result._dict
+    #     return result
 
-    def __xor__(self, s: Set[Any]) -> OrderedSet[T]:
-        """Return the symmetric difference of this set and *s*."""
-        return self.symmetric_difference(s)
+    # def __xor__(self, s: Set[Any]) -> OrderedSet[T]:
+    #     """Return the symmetric difference of this set and *s*."""
+    #     return self.symmetric_difference(s)
 
-    def __ixor__(self, s: Set[Any]) -> OrderedSet[T]:
-        """Update this set to be the symmetric difference of itself and *s*."""
-        result = self.symmetric_difference(s)
-        self._dict = result._dict
-        return result
+    # def __ixor__(self, s: Set[Any]) -> OrderedSet[T]:
+    #     """Update this set to be the symmetric difference of itself and *s*."""
+    #     result = self.symmetric_difference(s)
+    #     self._dict = result._dict
+    #     return result
 
     def __le__(self, s: Set[T]) -> bool:
         """Return whether this set is a subset of *s*."""
@@ -272,7 +329,7 @@ class FrozenOrderedSet(AbstractSet[T]):
         if self._my_hash:
             return self._my_hash
 
-        self._my_hash = hash(frozenset(self))
+        self._my_hash = hash(frozenset(self._dict))
         return self._my_hash
 
     def __eq__(self, other: object) -> bool:
