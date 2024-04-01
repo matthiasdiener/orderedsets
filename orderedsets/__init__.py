@@ -76,7 +76,7 @@ class OrderedSet(AbstractSet[T]):
 
     def add(self, element: T) -> None:
         """Add *element* to this set."""
-        self._dict = {**self._dict, **{element: None}}
+        self._dict[element] = None
 
     def clear(self) -> None:
         """Remove all elements from this set."""
@@ -112,10 +112,8 @@ class OrderedSet(AbstractSet[T]):
         if not others:
             return OrderedSet(self._dict)
 
-        result_elements = []
-        for element in self._dict.keys():
-            if all(element in other for other in others):
-                result_elements.append(element)
+        oth = set(self).intersection(*others)
+        result_elements = [element for element in self._dict if element in oth]
 
         return OrderedSet(result_elements)
 
@@ -271,7 +269,7 @@ class FrozenOrderedSet(AbstractSet[T]):
 
     def __hash__(self) -> int:
         """Return a hash of this set."""
-        if self._my_hash:
+        if self._my_hash is not None:
             return self._my_hash
 
         self._my_hash = hash(frozenset(self))
@@ -318,10 +316,8 @@ class FrozenOrderedSet(AbstractSet[T]):
         if not others:
             return FrozenOrderedSet(self._dict)
 
-        result_elements = []
-        for element in self._dict.keys():
-            if all(element in other for other in others):
-                result_elements.append(element)
+        oth = set(self).intersection(*others)
+        result_elements = [element for element in self._dict if element in oth]
 
         return FrozenOrderedSet(result_elements)
 
