@@ -64,7 +64,7 @@ for set_impl in ("set", "frozenset", "OrderedSet", "FrozenOrderedSet",
     try:
         print("  add\t\t", timeit("x.add(y)",
                                   setup=f"x={set_impl}({base_set});"
-                                        f"y={set_impl}({base_set})",
+                                        f"y={next(iter(base_set))}",
                                   number=10000, globals=globals()))
     except AttributeError:
         print("  add MISSING")
