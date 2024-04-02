@@ -25,6 +25,7 @@ API reference
 
    OrderedSets
    api
+   speed
 
    🚀 Github <https://github.com/matthiasdiener/orderedsets>
    💾 Download Releases <https://pypi.org/project/orderedsets>
