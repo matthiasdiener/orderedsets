@@ -2,17 +2,15 @@
 
 from timeit import timeit
 
-import orderedsets
-import orderedset
 import ordered_set
-
-from orderedsets import FrozenOrderedSet, OrderedSet  # noqa: F401
-
-# pip install orderedset
+import orderedset
+# https://github.com/idanmiara/ordered-set (pip install stableset), v5.2.1:
+from ordered_set import OrderedSet as ordered_set2  # noqa: F401, N813
+# https://github.com/simonpercivall/orderedset (pip install orderedset), v2.0.3:
 from orderedset import OrderedSet as cython_ordered_set  # noqa: F401, N813
 
-# pip install stableset
-from ordered_set import OrderedSet as ordered_set2  # noqa: F401, N813
+import orderedsets
+from orderedsets import FrozenOrderedSet, OrderedSet  # noqa: F401
 
 # Case 1: 1 item
 base_set = {1}
@@ -21,8 +19,9 @@ base_set = {1}
 # base_set = set(range(1000))
 
 print("base_set length:", len(base_set))
-print(f"Versions:\n{orderedsets.__version__=},\n{orderedset.__version__=},\n"
-      f"{ordered_set.__version__=}")
+print(f"Versions:\norderedsets={orderedsets.__version__},\n"
+      f"orderedset={orderedset.__version__},\n"
+      f"ordered_set={ordered_set.__version__}")
 
 for set_impl in ("set", "frozenset", "OrderedSet", "FrozenOrderedSet",
                  "cython_ordered_set", "ordered_set2"):
