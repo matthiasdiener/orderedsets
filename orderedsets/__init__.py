@@ -108,7 +108,7 @@ class OrderedSet(AbstractSet[T]):
             del self._dict[element]
 
     def intersection(self, *others: Iterable[T]) -> OrderedSet[T]:
-        """Return the intersection of this set and *others*."""
+        """Return a new set with elements common to this set and all *others*."""
         if not others:
             return OrderedSet(self._dict)
 
@@ -142,10 +142,7 @@ class OrderedSet(AbstractSet[T]):
 
     def pop(self) -> T:
         """Remove and return the most recently added element from this set."""
-        items = list(self._dict)
-        result = items.pop()
-        self._dict = dict.fromkeys(items)
-        return result
+        return self._dict.popitem()[0]
 
     def remove(self, element: T) -> None:
         """Remove *element* from this set, raising :exc:`KeyError` if not present."""
@@ -162,7 +159,7 @@ class OrderedSet(AbstractSet[T]):
         self._dict = self.symmetric_difference(s)._dict
 
     def union(self, *others: Iterable[T]) -> OrderedSet[T]:
-        """Return the union of this set and *others*."""
+        """Return a new set with elements from this set and *others*."""
         return OrderedSet(list(self._dict)
                           + [e for other in others for e in other])
 

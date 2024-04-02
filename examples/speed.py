@@ -5,7 +5,7 @@ from timeit import timeit
 import ordered_set
 import orderedset
 # https://github.com/idanmiara/ordered-set (pip install stableset), v5.2.1:
-from ordered_set import OrderedSet as ordered_set2  # noqa: F401, N813
+from ordered_set import OrderedSet as list_set  # noqa: F401, N813
 # https://github.com/simonpercivall/orderedset (pip install orderedset), v2.0.3:
 from orderedset import OrderedSet as cython_ordered_set  # noqa: F401, N813
 
@@ -21,7 +21,7 @@ for base_set in [{1}, set(range(1000))]:
     print("\nbase_set length:", len(base_set), "\n=====================")
 
     for set_impl in ("set", "frozenset", "OrderedSet", "FrozenOrderedSet",
-                     "cython_ordered_set", "ordered_set2"):
+                     "cython_ordered_set", "list_set"):
 
         print(set_impl)
 
@@ -65,3 +65,19 @@ for base_set in [{1}, set(range(1000))]:
                                       number=10000, globals=globals()))
         except AttributeError:
             print("  add MISSING")
+
+        try:
+            # discards nonexisting element
+            print("  discard\t", timeit("x.discard(y)",
+                                    setup=f"x={set_impl}({base_set});"
+                                          f"y={next(iter(base_set))}",
+                                    number=10000, globals=globals()))
+        except AttributeError:
+            print("  discard MISSING")
+
+        try:
+            print("  pop\t\t", timeit(f"for i in {base_set}: x.pop(); x.add(i)",
+                                    setup=f"x={set_impl}({base_set})",
+                                    number=10000, globals=globals()))
+        except AttributeError:
+            print("  pop MISSING")
