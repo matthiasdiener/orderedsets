@@ -69,15 +69,20 @@ for base_set in [{1}, set(range(1000))]:
         try:
             # discards nonexisting element
             print("  discard\t", timeit("x.discard(y)",
-                                    setup=f"x={set_impl}({base_set});"
-                                          f"y={next(iter(base_set))}",
-                                    number=10000, globals=globals()))
+                                        setup=f"x={set_impl}({base_set});"
+                                              f"y={next(iter(base_set))}",
+                                        number=10000, globals=globals()))
         except AttributeError:
             print("  discard MISSING")
 
         try:
             print("  pop\t\t", timeit(f"for i in {base_set}: x.pop(); x.add(i)",
-                                    setup=f"x={set_impl}({base_set})",
-                                    number=10000, globals=globals()))
+                                      setup=f"x={set_impl}({base_set})",
+                                      number=10000, globals=globals()))
         except AttributeError:
             print("  pop MISSING")
+
+        print("  difference\t", timeit("x.difference(y)",
+                                       setup=f"x={set_impl}({base_set});"
+                                             f"y={next(iter(base_set)),}",
+                                       number=10000, globals=globals()))

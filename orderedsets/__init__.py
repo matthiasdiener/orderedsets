@@ -91,7 +91,7 @@ class OrderedSet(AbstractSet[T]):
         if not others:
             return OrderedSet(self._dict)
         other_elems = set.union(*map(set, others))
-        items = {item: None for item in self if item not in other_elems}
+        items = [item for item in self._dict if item not in other_elems]
         return OrderedSet(items)
 
     def difference_update(self, *others: Iterable[T]) -> None:
@@ -305,7 +305,7 @@ class FrozenOrderedSet(AbstractSet[T]):
         if not others:
             return FrozenOrderedSet(self._dict)
         other_elems = set.union(*map(set, others))
-        items = {item: None for item in self if item not in other_elems}
+        items = [item for item in self._dict if item not in other_elems]
         return FrozenOrderedSet(items)
 
     def intersection(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
