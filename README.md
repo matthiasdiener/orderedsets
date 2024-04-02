@@ -9,7 +9,9 @@ An implementation of mutable and immutable ordered sets as thin wrappers around
 Python's `dict` class.
 These classes are meant as drop-in replacements for Python's builtin `set` and
 `frozenset` classes. Care has been taken to provide the same functionality as the Python classes,
-without API additions or removals, to allow easy switching between set implementations. These classes are often [faster than other ordered set implementations](https://matthiasdiener.github.io/orderedsets/speed.html).
+without API additions or removals, to allow easy switching between set implementations. These classes are often
+[faster than other ordered set implementations](https://matthiasdiener.github.io/orderedsets/speed.html)
+(but slower than Python's builtin sets).
 
 In contrast to Python's builtin `set` and `frozenset` classes, the order of
 items is kept (generally, insertion order), such that iterating over items in
