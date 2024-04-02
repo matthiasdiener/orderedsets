@@ -76,7 +76,7 @@ class OrderedSet(AbstractSet[T]):
 
     def add(self, element: T) -> None:
         """Add *element* to this set."""
-        self._dict = {**self._dict, **{element: None}}
+        self._dict[element] = None
 
     def clear(self) -> None:
         """Remove all elements from this set."""
@@ -91,7 +91,7 @@ class OrderedSet(AbstractSet[T]):
         if not others:
             return OrderedSet(self._dict)
         other_elems = set.union(*map(set, others))
-        items = {item: None for item in self if item not in other_elems}
+        items = [item for item in self._dict if item not in other_elems]
         return OrderedSet(items)
 
     def difference_update(self, *others: Iterable[T]) -> None:
@@ -108,14 +108,12 @@ class OrderedSet(AbstractSet[T]):
             del self._dict[element]
 
     def intersection(self, *others: Iterable[T]) -> OrderedSet[T]:
-        """Return the intersection of this set and *others*."""
+        """Return a new set with elements common to this set and all *others*."""
         if not others:
             return OrderedSet(self._dict)
 
-        result_elements = []
-        for element in self._dict.keys():
-            if all(element in other for other in others):
-                result_elements.append(element)
+        oth = set(self).intersection(*others)
+        result_elements = [element for element in self._dict if element in oth]
 
         return OrderedSet(result_elements)
 
@@ -144,10 +142,7 @@ class OrderedSet(AbstractSet[T]):
 
     def pop(self) -> T:
         """Remove and return the most recently added element from this set."""
-        items = list(self._dict)
-        result = items.pop()
-        self._dict = dict.fromkeys(items)
-        return result
+        return self._dict.popitem()[0]
 
     def remove(self, element: T) -> None:
         """Remove *element* from this set, raising :exc:`KeyError` if not present."""
@@ -164,7 +159,7 @@ class OrderedSet(AbstractSet[T]):
         self._dict = self.symmetric_difference(s)._dict
 
     def union(self, *others: Iterable[T]) -> OrderedSet[T]:
-        """Return the union of this set and *others*."""
+        """Return a new set with elements from this set and *others*."""
         return OrderedSet(list(self._dict)
                           + [e for other in others for e in other])
 
@@ -271,7 +266,7 @@ class FrozenOrderedSet(AbstractSet[T]):
 
     def __hash__(self) -> int:
         """Return a hash of this set."""
-        if self._my_hash:
+        if self._my_hash is not None:
             return self._my_hash
 
         self._my_hash = hash(frozenset(self))
@@ -310,7 +305,7 @@ class FrozenOrderedSet(AbstractSet[T]):
         if not others:
             return FrozenOrderedSet(self._dict)
         other_elems = set.union(*map(set, others))
-        items = {item: None for item in self if item not in other_elems}
+        items = [item for item in self._dict if item not in other_elems]
         return FrozenOrderedSet(items)
 
     def intersection(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
@@ -318,10 +313,8 @@ class FrozenOrderedSet(AbstractSet[T]):
         if not others:
             return FrozenOrderedSet(self._dict)
 
-        result_elements = []
-        for element in self._dict.keys():
-            if all(element in other for other in others):
-                result_elements.append(element)
+        oth = set(self).intersection(*others)
+        result_elements = [element for element in self._dict if element in oth]
 
         return FrozenOrderedSet(result_elements)
 
