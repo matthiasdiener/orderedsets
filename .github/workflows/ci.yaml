@@ -106,7 +106,7 @@ jobs:
         cd examples
         for f in *.py; do [[ $f == "speed.py" ]] && continue; echo Running $f; python $f; done
     - name: Run speed.py
-      if: matrix.os == 'macos-latest' || matrix.python-version < '3.10'
+      if: matrix.python-version < '3.10'
       run: |
         set -x
         python -m pip install stableset orderedset
