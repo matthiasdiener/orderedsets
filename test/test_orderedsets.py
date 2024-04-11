@@ -38,10 +38,10 @@ ordered_set_types = (OrderedSet, FrozenOrderedSet)
 mutable_set_types = (OrderedSet, set)
 immutable_set_types = (FrozenOrderedSet, frozenset)
 
-T_set = Union[Type[OrderedSet[T]], Type[FrozenOrderedSet[T]],
+T_set = Union[Type[OrderedSet], Type[FrozenOrderedSet[T]],
               Type[Set[T]], Type[FrozenSet[T]]]
-T_ordered_set = Union[Type[OrderedSet[T]], Type[FrozenOrderedSet[T]]]
-T_mutable_set = Union[Type[OrderedSet[T]], Type[Set[T]]]
+T_ordered_set = Union[Type[OrderedSet], Type[FrozenOrderedSet[T]]]
+T_mutable_set = Union[Type[OrderedSet], Type[Set[T]]]
 T_immutable_set = Union[Type[FrozenOrderedSet[T]], Type[FrozenSet[T]]]
 
 all_set_types = pytest.mark.parametrize("_cls", set_types)
