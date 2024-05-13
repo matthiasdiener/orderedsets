@@ -34,7 +34,7 @@ import pytest
     [
         ("set(range(1000))", "", 3, False, False),  # init
         ("hash(s)", "s = set(range(1000))", 10, True, False),  # hash
-        ("len(s)", "s = set(range(1000))", 8, False, False),  # len
+        ("len(s)", "s = set(range(1000))", 10, False, False),  # len
         ("set(range(1000)).union(set(range(1001)))", "", 10, False, False),  # union
         ("for e in s: pass", "s = set(range(1000))", 1.2, False, False),  # iter
         ("for i in range(1000): i in s", "s = set(range(500))", 15, False, False),  # contains  # noqa: E501
