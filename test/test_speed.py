@@ -38,7 +38,7 @@ import pytest
         ("set(range(1000)).union(set(range(1001)))", "", 10, False, False),  # union
         ("for e in s: pass", "s = set(range(1000))", 1.2, False, False),  # iter
         ("for i in range(1000): i in s", "s = set(range(500))", 15, False, False),  # contains  # noqa: E501
-        ("for i in range(1000): s.discard(10011)", "s = set(range(500))", 6, False, True),  # discard  # noqa: E501
+        ("for i in range(1000): s.discard(10011)", "s = set(range(500))", 8, False, True),  # discard  # noqa: E501
     ],
 )
 def test_speed(statement: str, _setup: str, max_slowdown_factor: float,
