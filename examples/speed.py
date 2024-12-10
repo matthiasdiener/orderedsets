@@ -4,8 +4,10 @@ from timeit import timeit
 
 import ordered_set
 import orderedset
+
 # https://github.com/idanmiara/ordered-set (pip install stableset), v5.2.1:
 from ordered_set import OrderedSet as list_set  # noqa: F401, N813
+
 # https://github.com/simonpercivall/orderedset (pip install orderedset), v2.0.3:
 from orderedset import OrderedSet as cython_ordered_set  # noqa: F401, N813
 
@@ -84,5 +86,5 @@ for base_set in [{1}, set(range(1000))]:
 
         print("  difference\t", timeit("x.difference(y)",
                                        setup=f"x={set_impl}({base_set});"
-                                             f"y={next(iter(base_set)),}",
+                                             f"y={next(iter(base_set)), }",
                                        number=10000, globals=globals()))

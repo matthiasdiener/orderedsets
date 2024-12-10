@@ -36,7 +36,7 @@ except ModuleNotFoundError:  # pragma: no cover
 __version__ = importlib_metadata.version(__package__ or __name__)
 
 from collections.abc import Iterator, Set
-from typing import AbstractSet, Any, Iterable, Optional, Type, TypeVar, Union
+from typing import AbstractSet, Any, Iterable, TypeVar
 
 T = TypeVar("T")
 
@@ -52,7 +52,7 @@ class OrderedSet(AbstractSet[T]):
     desired.
     """
 
-    def __init__(self, items: Union[Iterable[T], Type[_NotProvided]] = _NotProvided)\
+    def __init__(self, items: Iterable[T] | type[_NotProvided] = _NotProvided)\
             -> None:
         """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
         if items is _NotProvided:
@@ -243,7 +243,7 @@ class FrozenOrderedSet(AbstractSet[T]):
     ordering is desired.
     """
 
-    def __init__(self, items: Union[Iterable[T], Type[_NotProvided]] = _NotProvided)\
+    def __init__(self, items: Iterable[T] | type[_NotProvided] = _NotProvided)\
             -> None:
         """Create a new :class:`FrozenOrderedSet`, optionally initialized \
             with *items*."""
@@ -254,7 +254,7 @@ class FrozenOrderedSet(AbstractSet[T]):
             # mypy thinks 'items' can still be Type[_NotProvided] here.
             self._dict = dict.fromkeys(items)  # type: ignore[arg-type]
 
-        self._my_hash: Optional[int] = None
+        self._my_hash: int | None = None
 
     def __reduce__(self) -> tuple[Any, ...]:
         """Return pickling information for this set."""
