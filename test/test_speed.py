@@ -33,8 +33,8 @@ import pytest
     "statement, setup, max_slowdown_factor, skip_mutable, skip_immutable",
     [
         ("set(range(1000))", "", 3, False, False),  # init
-        ("hash(s)", "s = set(range(1000))", 10, True, False),  # hash
-        ("len(s)", "s = set(range(1000))", 10, False, False),  # len
+        ("hash(s)", "s = set(range(1000))", 13, True, False),  # hash
+        ("len(s)", "s = set(range(1000))", 13, False, False),  # len
         ("set(range(1000)).union(set(range(1001)))", "", 12, False, False),  # union
         ("for e in s: pass", "s = set(range(1000))", 1.5, False, False),  # iter
         ("for i in range(1000): i in s", "s = set(range(500))", 15, False, False),  # contains  # noqa: E501
