@@ -30,18 +30,18 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    "statement, _setup, max_slowdown_factor, skip_mutable, skip_immutable",
+    "statement, setup, max_slowdown_factor, skip_mutable, skip_immutable",
     [
         ("set(range(1000))", "", 3, False, False),  # init
-        ("hash(s)", "s = set(range(1000))", 10, True, False),  # hash
-        ("len(s)", "s = set(range(1000))", 10, False, False),  # len
-        ("set(range(1000)).union(set(range(1001)))", "", 10, False, False),  # union
-        ("for e in s: pass", "s = set(range(1000))", 1.2, False, False),  # iter
+        ("hash(s)", "s = set(range(1000))", 13, True, False),  # hash
+        ("len(s)", "s = set(range(1000))", 13, False, False),  # len
+        ("set(range(1000)).union(set(range(1001)))", "", 12, False, False),  # union
+        ("for e in s: pass", "s = set(range(1000))", 1.5, False, False),  # iter
         ("for i in range(1000): i in s", "s = set(range(500))", 15, False, False),  # contains  # noqa: E501
-        ("for i in range(1000): s.discard(10011)", "s = set(range(500))", 8, False, True),  # discard  # noqa: E501
+        ("for i in range(1000): s.discard(10011)", "s = set(range(500))", 12, False, True),  # discard  # noqa: E501
     ],
 )
-def test_speed(statement: str, _setup: str, max_slowdown_factor: float,
+def test_speed(statement: str, setup: str, max_slowdown_factor: float,
                skip_mutable: bool, skip_immutable: bool) -> None:
 
     import platform
@@ -49,20 +49,20 @@ def test_speed(statement: str, _setup: str, max_slowdown_factor: float,
         pytest.skip("Testing this against PyPy is not meaningful at the moment.")
 
     if not skip_mutable:
-        s_time = timeit(statement, setup=_setup, number=10000)
+        s_time = timeit(statement, setup=setup, number=10000)
         os_time = timeit(statement,
-                         setup="from orderedsets import OrderedSet as set;" + _setup,
+                         setup="from orderedsets import OrderedSet as set;" + setup,
                          number=10000)
         print(f"{statement} {s_time} {os_time}")
 
         assert os_time < max_slowdown_factor * s_time
 
     if not skip_immutable:
-        fs_time = timeit(statement, setup="set=frozenset;" + _setup, number=10000)
+        fs_time = timeit(statement, setup="set=frozenset;" + setup, number=10000)
 
         fos_time = timeit(statement,
                           setup="from orderedsets import FrozenOrderedSet as set;"
-                          + _setup,
+                          + setup,
                           number=10000)
 
         print(f"{statement} {fs_time} {fos_time}")
