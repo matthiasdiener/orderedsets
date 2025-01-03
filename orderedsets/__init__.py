@@ -35,8 +35,8 @@ except ModuleNotFoundError:  # pragma: no cover
 
 __version__ = importlib_metadata.version(__package__ or __name__)
 
-from collections.abc import Iterator, Set
-from typing import AbstractSet, Any, Iterable, TypeVar
+from collections.abc import Iterable, Iterator, Set
+from typing import AbstractSet, Any, TypeVar
 
 T = TypeVar("T")
 
