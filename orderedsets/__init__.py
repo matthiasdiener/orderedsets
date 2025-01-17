@@ -38,7 +38,8 @@ __version__ = importlib_metadata.version(__package__ or __name__)
 from collections.abc import Iterable, Iterator, Set
 from typing import AbstractSet, Any, TypeVar
 
-T = TypeVar("T", covariant=True)
+T = TypeVar("T")
+T_cov = TypeVar("T_cov", covariant=True)
 
 
 class _NotProvided:
@@ -236,14 +237,14 @@ class OrderedSet(AbstractSet[T]):
         return len(self) > len(s) and set(self) > set(s)
 
 
-class FrozenOrderedSet(AbstractSet[T]):
+class FrozenOrderedSet(AbstractSet[T_cov]):
     """A frozen set class that preserves insertion order.
 
     It can be used as a drop-in replacement for :class:`frozenset` where
     ordering is desired.
     """
 
-    def __init__(self, items: Iterable[T] | type[_NotProvided] = _NotProvided)\
+    def __init__(self, items: Iterable[T_cov] | type[_NotProvided] = _NotProvided)\
             -> None:
         """Create a new :class:`FrozenOrderedSet`, optionally initialized \
             with *items*."""
@@ -292,15 +293,15 @@ class FrozenOrderedSet(AbstractSet[T]):
         """Return whether *o* is in this set."""
         return o in self._dict
 
-    def __iter__(self) -> Iterator[T]:
+    def __iter__(self) -> Iterator[T_cov]:
         """Return an iterator over the elements of this set."""
         return iter(self._dict)
 
-    def copy(self) -> FrozenOrderedSet[T]:
+    def copy(self) -> FrozenOrderedSet[T_cov]:
         """Return a shallow copy of this set."""
         return FrozenOrderedSet(self._dict)
 
-    def difference(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
+    def difference(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the difference of this set and *others*."""
         if not others:
             return FrozenOrderedSet(self._dict)
@@ -308,7 +309,7 @@ class FrozenOrderedSet(AbstractSet[T]):
         items = [item for item in self._dict if item not in other_elems]
         return FrozenOrderedSet(items)
 
-    def intersection(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
+    def intersection(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the intersection of this set and *others*."""
         if not others:
             return FrozenOrderedSet(self._dict)
@@ -318,41 +319,41 @@ class FrozenOrderedSet(AbstractSet[T]):
 
         return FrozenOrderedSet(result_elements)
 
-    def symmetric_difference(self, s: Iterable[T]) -> FrozenOrderedSet[T]:
+    def symmetric_difference(self, s: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the symmetric difference of this set and *s*."""
         return FrozenOrderedSet(
             dict.fromkeys([e for e in self._dict if e not in s]
                           + [e for e in s if e not in self._dict]))
 
-    def isdisjoint(self, s: Iterable[T]) -> bool:
+    def isdisjoint(self, s: Iterable[T_cov]) -> bool:
         """Return whether this set is disjoint with *s*."""
         return self._dict.keys().isdisjoint(s)  # pylint: disable=no-member
 
-    def issubset(self, s: Iterable[T]) -> bool:
+    def issubset(self, s: Iterable[T_cov]) -> bool:
         """Return whether this set is a subset of *s*."""
         return all(i in s for i in self)
 
-    def issuperset(self, s: Iterable[T]) -> bool:
+    def issuperset(self, s: Iterable[T_cov]) -> bool:
         """Return whether this set is a superset of *s*."""
         return set(self).issuperset(set(s))
 
-    def union(self, *others: Iterable[T]) -> FrozenOrderedSet[T]:
+    def union(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the union of this set and *others*."""
         return FrozenOrderedSet(list(self._dict)
                                 + [e for other in others for e in other])
 
-    def __and__(self, s: Set[T]) -> FrozenOrderedSet[T]:
+    def __and__(self, s: Set[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the intersection of this set and *s*."""
         return self.intersection(s)
 
-    def __or__(self, s: Set[Any]) -> FrozenOrderedSet[T]:
+    def __or__(self, s: Set[Any]) -> FrozenOrderedSet[T_cov]:
         """Return the union of this set and *s*."""
         return self.union(s)
 
-    def __sub__(self, s: Set[T]) -> FrozenOrderedSet[T]:
+    def __sub__(self, s: Set[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the difference of this set and *s*."""
         return self.difference(s)
 
-    def __xor__(self, s: Set[Any]) -> FrozenOrderedSet[T]:
+    def __xor__(self, s: Set[Any]) -> FrozenOrderedSet[T_cov]:
         """Return the symmetric difference of this set and *s*."""
         return self.symmetric_difference(s)
