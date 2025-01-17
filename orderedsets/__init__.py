@@ -36,10 +36,10 @@ except ModuleNotFoundError:  # pragma: no cover
 __version__ = importlib_metadata.version(__package__ or __name__)
 
 from collections.abc import Iterable, Iterator, Set
-from typing import AbstractSet, Any, TypeVar
+from typing import AbstractSet, Any, Hashable, TypeVar
 
-T = TypeVar("T")
-T_cov = TypeVar("T_cov", covariant=True)
+T = TypeVar("T", bound=Hashable)
+T_cov = TypeVar("T_cov", covariant=True, bound=Hashable)
 
 
 class _NotProvided:
