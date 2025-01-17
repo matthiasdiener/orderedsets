@@ -29,4 +29,4 @@ Internal stuff that is only here because the documentation tool wants it
 
 .. class:: orderedsets.T_cov
 
-    A type variable for :class:`~orderedsets.FrozenOrderedSet`.
+    A (covariant) type variable for :class:`~orderedsets.FrozenOrderedSet`.
