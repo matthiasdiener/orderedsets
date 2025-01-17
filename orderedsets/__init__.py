@@ -38,7 +38,7 @@ __version__ = importlib_metadata.version(__package__ or __name__)
 from collections.abc import Iterable, Iterator, Set
 from typing import AbstractSet, Any, TypeVar
 
-T = TypeVar("T")
+T = TypeVar("T", covariant=True)
 
 
 class _NotProvided:
