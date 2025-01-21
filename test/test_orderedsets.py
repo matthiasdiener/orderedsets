@@ -217,6 +217,7 @@ def test_remove_discard_mutable(cls: T_mutable_set[str]) -> None:
     s.remove("d")
 
     assert s == {"a"}
+    assert isinstance(s, cls)
 
 
 @all_immutable_set_types
@@ -235,11 +236,13 @@ def test_clear_mutable(cls: T_mutable_set[str]) -> None:
 
     assert len(s) == 0
     assert s == cls()
+    assert isinstance(s, cls)
 
 
 @all_set_types
 def test_convert_to_set(cls: T_set[int]) -> None:
     assert {1, 2, 3} == set(cls([3, 1, 2]))
+    assert {1, 2, 3} == frozenset(cls([3, 1, 2]))
 
 
 @all_ordered_set_types
@@ -305,6 +308,7 @@ def test_update_mutable(cls: T_mutable_set[Any]) -> None:
 
     assert len(s) == 3
     assert s == {"a", "f", "h"}
+    assert isinstance(s, cls)
 
 
 @all_set_types
@@ -314,6 +318,7 @@ def test_intersection(cls: T_set[str]) -> None:
     assert cls(["a"]) == s1.intersection(s2)
     assert s1 == s1.intersection(s1)
     assert cls(["a", "b"]) == s1.intersection(["a", "b"])
+    assert isinstance(s1.intersection(["b", "c"]), cls)
 
     if cls in ordered_set_types:
         assert list(s1.intersection(["a", "b", "c"])) == ["c", "a", "b"]
@@ -363,6 +368,7 @@ def test_intersection_update_mutable(cls: T_mutable_set[str]) -> None:
         s3.intersection_update(["b", "a"])
         s3.intersection_update({"b", "a"})
         assert list(s3) == ["a", "b"]
+        assert isinstance(s3, cls)
 
 
 @all_immutable_set_types
@@ -382,12 +388,15 @@ def test_add_mutable(cls: T_mutable_set[str]) -> None:
     if cls in ordered_set_types:
         assert list(s) == ["c", "a", "b", "z"]
 
+    assert isinstance(s, cls)
+
 
 @all_set_types
 def test_copy(cls: T_set[str]) -> None:
     s1 = cls(["c", "a", "b"])
     s2 = s1.copy()
     assert s1 == s2
+    assert type(s1) is type(s2)
 
     if not isinstance(s1, frozenset):
         assert s1 is not s2
@@ -776,14 +785,28 @@ def test_ordering(cls: T_set[int]) -> None:
 
 @all_ordered_set_types
 def test_isinstance(cls: T_ordered_set[int]) -> None:
+    from collections.abc import MutableSet as abc_MutableSet
+    from collections.abc import Set as abc_Set
     assert isinstance(cls(), AbstractSet)
     assert not isinstance(cls(), Set)
     assert not isinstance(cls(), set)
     assert not isinstance(cls(), frozenset)
 
+    assert isinstance(cls(), abc_Set)
+
     if cls in mutable_set_types:
         assert isinstance(cls(), OrderedSet)
         assert not isinstance(cls(), FrozenOrderedSet)
+        # assert isinstance(cls(), abc_MutableSet)  # see xfail test below
     else:
         assert not isinstance(cls(), OrderedSet)
         assert isinstance(cls(), FrozenOrderedSet)
+        assert not isinstance(cls(), abc_MutableSet)
+
+
+@all_ordered_set_types
+def test_isinstance_xfail(cls: T_ordered_set[int]) -> None:
+    from collections.abc import MutableSet as abc_MutableSet
+    if cls in mutable_set_types:
+        pytest.xfail("OrderedSet is not a MutableSet")
+        assert isinstance(cls(), abc_MutableSet)
