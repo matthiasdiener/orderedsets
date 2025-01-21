@@ -2,4 +2,4 @@
 
 set -ex
 
-mypy --strict orderedsets/ test/
+mypy --strict orderedsets/ test/ examples/
