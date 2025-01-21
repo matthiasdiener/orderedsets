@@ -2,8 +2,8 @@
 
 from timeit import timeit
 
-import ordered_set
-import orderedset
+import ordered_set  # type: ignore[import-not-found,unused-ignore]
+import orderedset  # type: ignore[import-not-found,unused-ignore]
 
 # https://github.com/idanmiara/ordered-set (pip install stableset), v5.2.1:
 from ordered_set import OrderedSet as list_set  # noqa: F401, N813
