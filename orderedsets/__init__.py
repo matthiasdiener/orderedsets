@@ -39,9 +39,9 @@ import sys
 from collections.abc import Iterable, Iterator
 from typing import Any, Hashable, TypeVar
 
-if sys.version_info < (3, 9): # pragma: no cover
+if sys.version_info < (3, 9):  # pragma: no cover
+    from typing import AbstractSet as MutableSet
     from typing import AbstractSet as Set
-    from typing import Set as MutableSet
 else:
     from collections.abc import MutableSet, Set
 
@@ -259,7 +259,8 @@ class FrozenOrderedSet(Set[T_cov]):
     __contains__ = OrderedSet.__contains__
     __iter__ = OrderedSet.__iter__
 
-    __eq__ = Set.__eq__  # needed for mypy
+    if sys.version_info >= (3, 9):
+        __eq__ = Set.__eq__  # needed for mypy
 
     copy = OrderedSet.copy
 

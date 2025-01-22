@@ -797,7 +797,9 @@ def test_isinstance(cls: T_ordered_set[int]) -> None:
     if cls in mutable_set_types:
         assert isinstance(cls(), OrderedSet)
         assert not isinstance(cls(), FrozenOrderedSet)
-        assert isinstance(cls(), abc_MutableSet)
+        import sys
+        if sys.version_info >= (3, 9):
+            assert isinstance(cls(), abc_MutableSet)
     else:
         assert not isinstance(cls(), OrderedSet)
         assert isinstance(cls(), FrozenOrderedSet)
