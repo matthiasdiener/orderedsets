@@ -35,8 +35,16 @@ except ModuleNotFoundError:  # pragma: no cover
 
 __version__ = importlib_metadata.version(__package__ or __name__)
 
-from collections.abc import Iterable, Iterator, MutableSet, Set
+import sys
+from collections.abc import Iterable, Iterator
 from typing import Any, Hashable, TypeVar
+
+if sys.version_info < (3, 9):
+    from typing import AbstractSet as Set
+    from typing import Set as MutableSet
+else:
+    from collections.abc import MutableSet, Set
+
 
 T = TypeVar("T", bound=Hashable)
 T_cov = TypeVar("T_cov", covariant=True, bound=Hashable)
