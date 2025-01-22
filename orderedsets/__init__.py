@@ -52,6 +52,7 @@ class OrderedSet(MutableSet[T]):
     It implements the same API as :class:`set` and can be used as a drop-in
     replacement for that class when ordering is desired.
     """
+
     def __init__(self, items: Iterable[T] | type[_NotProvided] = _NotProvided)\
             -> None:
         """Create a new :class:`OrderedSet`, optionally initialized with *items*."""
@@ -217,6 +218,7 @@ class FrozenOrderedSet(Set[T_cov]):
     It implements the same API as :class:`frozenset` and can be used as a
     drop-in replacement for that class when ordering is desired.
     """
+
     _dict: dict[T_cov, None]
     _my_hash: int | None = None
 
