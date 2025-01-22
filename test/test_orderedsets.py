@@ -804,9 +804,9 @@ def test_isinstance(cls: T_ordered_set[int]) -> None:
         assert not isinstance(cls(), abc_MutableSet)
 
 
-@all_ordered_set_types
-def test_isinstance_xfail(cls: T_ordered_set[int]) -> None:
+@pytest.mark.xfail(reason="OrderedSet is not a MutableSet")
+def test_isinstance_xfail() -> None:
     from collections.abc import MutableSet as abc_MutableSet
-    if cls in mutable_set_types:
-        pytest.xfail("OrderedSet is not a MutableSet")
-        assert isinstance(cls(), abc_MutableSet)
+
+    cls = OrderedSet
+    assert isinstance(cls(), abc_MutableSet)
