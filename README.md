@@ -59,6 +59,7 @@ Please also see the [documentation](https://matthiasdiener.github.io/orderedsets
 - https://pypi.org/project/stableset/ (no frozen/immutable class)
 - https://pypi.org/project/orderedset/ (Cython, no frozen/immutable class)
 - https://pypi.org/project/Ordered-set-37/ (no frozen/immutable class)
+- https://github.com/grantjenks/python-sortedcollections (no frozen/immutable class)
 
 ### Discussions
 
