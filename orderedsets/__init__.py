@@ -39,7 +39,7 @@ import sys
 from collections.abc import Iterable, Iterator
 from typing import Any, Hashable, TypeVar
 
-if sys.version_info < (3, 9):
+if sys.version_info < (3, 9): # pragma: no cover
     from typing import AbstractSet as Set
     from typing import Set as MutableSet
 else:
