@@ -1,32 +1,40 @@
 OrderedSet
 ==========
 
-.. autoclass:: orderedsets.OrderedSet
-    :members:
-    :member-order: bysource
-    :show-inheritance:
-    :special-members:
-    :exclude-members: __hash__, __weakref__
+.. autoclass:: orderedsets.OrderedSet()
 
 
 FrozenOrderedSet
 ================
 
-.. autoclass:: orderedsets.FrozenOrderedSet
-    :members:
-    :member-order: bysource
-    :show-inheritance:
-    :special-members:
-    :exclude-members: __weakref__, __reduce__
+.. autoclass:: orderedsets.FrozenOrderedSet()
 
 
-Internal stuff that is only here because the documentation tool wants it
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexSet
+========
+
+.. autoclass:: orderedsets.IndexSet()
+
+
+FrozenIndexSet
+==============
+
+.. autoclass:: orderedsets.FrozenIndexSet()
+
+
+Type Variables
+^^^^^^^^^^^^^^
 
 .. class:: orderedsets.T
 
-    A type variable for items in an :class:`~orderedsets.OrderedSet`.
+    A type variable for items in an
+    :class:`~orderedsets.OrderedSet` and :class:`~orderedsets.IndexSet`.
+    All items must be hashable.
 
 .. class:: orderedsets.T_cov
 
-    A (covariant) type variable for items in a :class:`~orderedsets.FrozenOrderedSet`.
+    A (covariant) type variable for items in a
+    :class:`~orderedsets.FrozenOrderedSet` and :class:`~orderedsets.FrozenIndexSet`.
+    All items must be hashable.
+
+

@@ -11,7 +11,8 @@ authors = [
 ]
 description = "An implementation of mutable and immutable ordered sets."
 dependencies = [
-    "importlib_metadata;python_version<'3.8'"
+    "importlib_metadata;python_version<'3.8'",
+    "more_itertools",
 ]
 readme = "README.md"
 license = { file="LICENSE" }
@@ -24,8 +25,9 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/matthiasdiener/orderedsets/"
-"Bug Tracker" = "https://github.com/matthiasdiener/orderedsets/issues"
+Homepage = "https://github.com/matthiasdiener/orderedsets/"
+Documentation = "https://matthiasdiener.github.io/orderedsets"
+Issues = "https://github.com/matthiasdiener/orderedsets/issues"
 
 [tool.ruff]
 preview = true

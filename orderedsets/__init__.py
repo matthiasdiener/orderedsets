@@ -49,8 +49,17 @@ class _NotProvided:
 class OrderedSet(AbstractSet[T]):
     """A set class that preserves insertion order.
 
-    It implements the same API as :class:`set` and can be used as a drop-in
+    It implements exactly the same API as :class:`set` and can be used as a drop-in
     replacement for that class when ordering is desired.
+
+    .. doctest::
+
+        >>> oset = OrderedSet(["a", "b", "c", "d"])
+        >>> oset.add("X")
+        >>> oset
+        OrderedSet({'a', 'b', 'c', 'd', 'X'})
+        >>> oset == set(["a", "b", "c", "d", "X"])
+        True
     """
 
     def __init__(self, items: Iterable[T] | type[_NotProvided] = _NotProvided)\
@@ -241,8 +250,16 @@ class OrderedSet(AbstractSet[T]):
 class FrozenOrderedSet(AbstractSet[T_cov]):
     """A frozen set class that preserves insertion order.
 
-    It implements the same API as :class:`frozenset` and can be used as a
+    It implements exactly the same API as :class:`frozenset` and can be used as a
     drop-in replacement for that class when ordering is desired.
+
+    .. doctest::
+
+        >>> foset = FrozenOrderedSet(["a", "b", "c", "d"])
+        >>> foset
+        FrozenOrderedSet({'a', 'b', 'c', 'd'})
+        >>> foset == set(["a", "b", "c", "d"])
+        True
     """
 
     def __init__(self, items: Iterable[T_cov] | type[_NotProvided] = _NotProvided)\
@@ -365,3 +382,85 @@ class FrozenOrderedSet(AbstractSet[T_cov]):
     def __xor__(self, s: Set[Any]) -> FrozenOrderedSet[T_cov]:
         """Return the symmetric difference of this set and *s*."""
         return self.symmetric_difference(s)
+
+
+class IndexSet(OrderedSet[T]):
+    """A set class that preserves insertion order and allows indexing.
+
+    The only change in API from :class:`set` is the addition of the
+    :meth:`__getitem__` method.
+
+    .. automethod:: __getitem__
+    """
+
+    def __getitem__(self, index: int | slice) -> T | list[T]:
+        """Return the element at *index* or a list of elements for a slice.
+
+        .. doctest::
+
+            >>> iset = IndexSet(["a", "b", "c", "d", "e", "f", "g", "h", "i"])
+            >>> iset[0]
+            'a'
+            >>> iset[-1]
+            'i'
+            >>> iset[-2:-8:-2]
+            ['h', 'f', 'd']
+        """
+        if isinstance(index, int):
+            if index < 0:
+                index = len(self) + index
+
+            if index >= len(self) or index < 0:
+                raise IndexError("Index out of range.")
+
+            from itertools import islice
+            return next(islice(self._dict.keys(), index, index + 1))
+
+        elif isinstance(index, slice):
+            from more_itertools import islice_extended
+            return list(
+                islice_extended(self._dict.keys(), index.start, index.stop, index.step))
+
+        else:
+            raise TypeError("Index must be an integer or slice.")
+
+
+class FrozenIndexSet(FrozenOrderedSet[T_cov]):
+    """A frozen set class that preserves insertion order and allows indexing.
+
+    The only change in API from :class:`frozenset` is the addition of the
+    :meth:`__getitem__` method.
+
+    .. automethod:: __getitem__
+    """
+
+    def __getitem__(self, index: int | slice) -> T_cov | list[T_cov]:
+        """Return the element at *index* or a list of elements for a slice.
+
+        .. doctest::
+
+            >>> fiset = FrozenIndexSet(["a", "b", "c", "d", "e", "f", "g", "h", "i"])
+            >>> fiset[0]
+            'a'
+            >>> fiset[-1]
+            'i'
+            >>> fiset[-2:-8:-2]
+            ['h', 'f', 'd']
+        """
+        if isinstance(index, int):
+            if index < 0:
+                index = len(self) + index
+
+            if index >= len(self) or index < 0:
+                raise IndexError("Index out of range.")
+
+            from itertools import islice
+            return next(islice(self._dict.keys(), index, index + 1))
+
+        elif isinstance(index, slice):
+            from more_itertools import islice_extended
+            return list(
+                islice_extended(self._dict.keys(), index.start, index.stop, index.step))
+
+        else:
+            raise TypeError("Index must be an integer or slice.")
