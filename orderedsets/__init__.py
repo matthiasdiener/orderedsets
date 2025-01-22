@@ -35,8 +35,16 @@ except ModuleNotFoundError:  # pragma: no cover
 
 __version__ = importlib_metadata.version(__package__ or __name__)
 
-from collections.abc import Iterable, Iterator, Set
-from typing import AbstractSet, Any, Hashable, TypeVar
+import sys
+from collections.abc import Iterable, Iterator
+from typing import Any, Hashable, TypeVar
+
+if sys.version_info < (3, 9):  # pragma: no cover
+    from typing import AbstractSet as MutableSet
+    from typing import AbstractSet as Set
+else:
+    from collections.abc import MutableSet, Set
+
 
 T = TypeVar("T", bound=Hashable)
 T_cov = TypeVar("T_cov", covariant=True, bound=Hashable)
@@ -46,7 +54,7 @@ class _NotProvided:
     pass
 
 
-class OrderedSet(AbstractSet[T]):
+class OrderedSet(MutableSet[T]):
     """A set class that preserves insertion order.
 
     It implements the same API as :class:`set` and can be used as a drop-in
@@ -62,12 +70,6 @@ class OrderedSet(AbstractSet[T]):
             # type-ignore-reason:
             # mypy thinks 'items' can still be Type[_NotProvided] here.
             self._dict = dict.fromkeys(items)  # type: ignore[arg-type]
-
-    def __eq__(self, other: object) -> bool:
-        """Return whether this set is equal to *other*."""
-        return (isinstance(other, Set)
-                and len(self) == len(other)
-                and all(i in other for i in self))
 
     def __repr__(self) -> str:
         """Return a string representation of this set."""
@@ -129,10 +131,6 @@ class OrderedSet(AbstractSet[T]):
             common_keys = [key for key in common_keys if key in set(other)]
 
         self._dict = dict.fromkeys(common_keys)
-
-    def isdisjoint(self, s: Iterable[T]) -> bool:
-        """Return whether this set is disjoint with *s*."""
-        return self._dict.keys().isdisjoint(s)
 
     def issubset(self, s: Iterable[T]) -> bool:
         """Return whether this set is a subset of *s*."""
@@ -221,42 +219,18 @@ class OrderedSet(AbstractSet[T]):
         self._dict = result._dict
         return result
 
-    def __le__(self, s: Set[T]) -> bool:
-        """Return whether this set is a subset of *s*."""
-        return self.issubset(s)
 
-    def __lt__(self, s: Set[T]) -> bool:
-        """Return whether this set is a proper subset of *s*."""
-        return len(self) < len(s) and self.issubset(s)
-
-    def __ge__(self, s: Set[T]) -> bool:
-        """Return whether this set is a superset of *s*."""
-        return set(self) >= set(s)
-
-    def __gt__(self, s: Set[T]) -> bool:
-        """Return whether this set is a proper superset of *s*."""
-        return len(self) > len(s) and set(self) > set(s)
-
-
-class FrozenOrderedSet(AbstractSet[T_cov]):
+class FrozenOrderedSet(Set[T_cov]):
     """A frozen set class that preserves insertion order.
 
     It implements the same API as :class:`frozenset` and can be used as a
     drop-in replacement for that class when ordering is desired.
     """
 
-    def __init__(self, items: Iterable[T_cov] | type[_NotProvided] = _NotProvided)\
-            -> None:
-        """Create a new :class:`FrozenOrderedSet`, optionally initialized \
-            with *items*."""
-        if items is _NotProvided:
-            self._dict = {}
-        else:
-            # type-ignore-reason:
-            # mypy thinks 'items' can still be Type[_NotProvided] here.
-            self._dict = dict.fromkeys(items)  # type: ignore[arg-type]
+    _dict: dict[T_cov, None]
+    _my_hash: int | None = None
 
-        self._my_hash: int | None = None
+    __init__ = OrderedSet.__init__
 
     def __reduce__(self) -> tuple[Any, ...]:
         """Return pickling information for this set."""
@@ -280,88 +254,25 @@ class FrozenOrderedSet(AbstractSet[T_cov]):
         self._my_hash = hash(frozenset(self))
         return self._my_hash
 
-    def __eq__(self, other: object) -> bool:
-        """Return whether this set is equal to *other*."""
-        return (isinstance(other, Set)
-                and len(self) == len(other)
-                and all(i in other for i in self))
+    __repr__ = OrderedSet.__repr__
+    __len__ = OrderedSet.__len__
+    __contains__ = OrderedSet.__contains__
+    __iter__ = OrderedSet.__iter__
 
-    def __repr__(self) -> str:
-        """Return a string representation of this set."""
-        cls_name = self.__class__.__name__
-        if len(self) == 0:
-            return f"{cls_name}()"
-        return f"{cls_name}({{" + ", ".join([repr(k) for k in self._dict]) + "})"
+    if sys.version_info >= (3, 9):
+        __eq__ = Set.__eq__  # needed for mypy
 
-    def __len__(self) -> int:
-        """Return the number of elements in this set."""
-        return len(self._dict)
+    copy = OrderedSet.copy
 
-    def __contains__(self, o: object) -> bool:
-        """Return whether *o* is in this set."""
-        return o in self._dict
+    difference = OrderedSet.difference
+    intersection = OrderedSet.intersection
+    symmetric_difference = OrderedSet.symmetric_difference
 
-    def __iter__(self) -> Iterator[T_cov]:
-        """Return an iterator over the elements of this set."""
-        return iter(self._dict)
+    issubset = OrderedSet.issubset
+    issuperset = OrderedSet.issuperset
+    union = OrderedSet.union
 
-    def copy(self) -> FrozenOrderedSet[T_cov]:
-        """Return a shallow copy of this set."""
-        return self.__class__(self._dict)
-
-    def difference(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
-        """Return the difference of this set and *others*."""
-        if not others:
-            return self.__class__(self._dict)
-        other_elems = set.union(*map(set, others))
-        items = [item for item in self._dict if item not in other_elems]
-        return self.__class__(items)
-
-    def intersection(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
-        """Return the intersection of this set and *others*."""
-        if not others:
-            return self.__class__(self._dict)
-
-        oth = set(self).intersection(*others)
-        result_elements = [element for element in self._dict if element in oth]
-
-        return self.__class__(result_elements)
-
-    def symmetric_difference(self, s: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
-        """Return the symmetric difference of this set and *s*."""
-        return self.__class__(
-            dict.fromkeys([e for e in self._dict if e not in s]
-                          + [e for e in s if e not in self._dict]))
-
-    def isdisjoint(self, s: Iterable[T_cov]) -> bool:
-        """Return whether this set is disjoint with *s*."""
-        return self._dict.keys().isdisjoint(s)  # pylint: disable=no-member
-
-    def issubset(self, s: Iterable[T_cov]) -> bool:
-        """Return whether this set is a subset of *s*."""
-        return all(i in s for i in self)
-
-    def issuperset(self, s: Iterable[T_cov]) -> bool:
-        """Return whether this set is a superset of *s*."""
-        return set(self).issuperset(set(s))
-
-    def union(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
-        """Return the union of this set and *others*."""
-        return self.__class__(list(self._dict)
-                                + [e for other in others for e in other])
-
-    def __and__(self, s: Set[T_cov]) -> FrozenOrderedSet[T_cov]:
-        """Return the intersection of this set and *s*."""
-        return self.intersection(s)
-
-    def __or__(self, s: Set[Any]) -> FrozenOrderedSet[T_cov]:
-        """Return the union of this set and *s*."""
-        return self.union(s)
-
-    def __sub__(self, s: Set[T_cov]) -> FrozenOrderedSet[T_cov]:
-        """Return the difference of this set and *s*."""
-        return self.difference(s)
-
-    def __xor__(self, s: Set[Any]) -> FrozenOrderedSet[T_cov]:
-        """Return the symmetric difference of this set and *s*."""
-        return self.symmetric_difference(s)
+    __and__ = OrderedSet.__and__
+    __or__ = OrderedSet.__or__
+    __sub__ = OrderedSet.__sub__
+    __xor__ = OrderedSet.__xor__

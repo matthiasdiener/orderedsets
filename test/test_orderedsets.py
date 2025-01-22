@@ -797,16 +797,10 @@ def test_isinstance(cls: T_ordered_set[int]) -> None:
     if cls in mutable_set_types:
         assert isinstance(cls(), OrderedSet)
         assert not isinstance(cls(), FrozenOrderedSet)
-        # assert isinstance(cls(), abc_MutableSet)  # see xfail test below
+        import sys
+        if sys.version_info >= (3, 9):
+            assert isinstance(cls(), abc_MutableSet)
     else:
         assert not isinstance(cls(), OrderedSet)
         assert isinstance(cls(), FrozenOrderedSet)
         assert not isinstance(cls(), abc_MutableSet)
-
-
-@pytest.mark.xfail(reason="OrderedSet is not a MutableSet")
-def test_isinstance_xfail() -> None:
-    from collections.abc import MutableSet as abc_MutableSet
-
-    cls = OrderedSet
-    assert isinstance(cls(), abc_MutableSet)
