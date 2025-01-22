@@ -11,7 +11,8 @@ authors = [
 ]
 description = "An implementation of mutable and immutable ordered sets."
 dependencies = [
-    "importlib_metadata;python_version<'3.8'"
+    "importlib_metadata;python_version<'3.8'",
+    "more_itertools",
 ]
 readme = "README.md"
 license = { file="LICENSE" }
