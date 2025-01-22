@@ -74,4 +74,6 @@ def test_indexset(cls: T_set[str]) -> None:
     assert iset[-2:-8:-2] == ["i", "g", "e"] == input_list[-2:-8:-2]
     assert iset[-2:-8:-3] == ["i", "f"] == input_list[-2:-8:-3]
 
+    assert iset[5:100] == ["f", "g", "h", "i", "j"] == input_list[5:100]
+
     # }}}
