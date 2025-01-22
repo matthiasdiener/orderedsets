@@ -29,12 +29,12 @@ Type Variables
 
     A type variable for items in an
     :class:`~orderedsets.OrderedSet` and :class:`~orderedsets.IndexSet`.
-    All items must be :class:`~collections.abc.Hashable`.
+    All items must be hashable.
 
 .. class:: orderedsets.T_cov
 
     A (covariant) type variable for items in a
     :class:`~orderedsets.FrozenOrderedSet` and :class:`~orderedsets.FrozenIndexSet`.
-    All items must be :class:`~collections.abc.Hashable`.
+    All items must be hashable.
 
 
