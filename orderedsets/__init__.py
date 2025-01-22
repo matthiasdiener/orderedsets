@@ -288,9 +288,10 @@ class FrozenOrderedSet(AbstractSet[T_cov]):
 
     def __repr__(self) -> str:
         """Return a string representation of this set."""
+        cls_name = self.__class__.__name__
         if len(self) == 0:
-            return "FrozenOrderedSet()"
-        return "FrozenOrderedSet({" + ", ".join([repr(k) for k in self._dict]) + "})"
+            return f"{cls_name}()"
+        return f"{cls_name}({{" + ", ".join([repr(k) for k in self._dict]) + "})"
 
     def __len__(self) -> int:
         """Return the number of elements in this set."""
