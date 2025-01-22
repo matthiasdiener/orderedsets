@@ -365,3 +365,53 @@ class FrozenOrderedSet(AbstractSet[T_cov]):
     def __xor__(self, s: Set[Any]) -> FrozenOrderedSet[T_cov]:
         """Return the symmetric difference of this set and *s*."""
         return self.symmetric_difference(s)
+
+
+class IndexSet(OrderedSet[T]):
+    """A set class that preserves insertion order and allows indexing."""
+
+    def __getitem__(self, index: int | slice) -> T | list[T]:
+        """Return the element at *index* or a list of elements for a slice."""
+
+        if isinstance(index, int):
+            if index < 0:
+                index = len(self) + index
+
+            if index >= len(self) or index < 0:
+                raise IndexError("Index out of range.")
+
+            from itertools import islice
+            return next(islice(self._dict.keys(), index, index + 1))
+
+        elif isinstance(index, slice):
+            from more_itertools import islice_extended
+            return list(
+                islice_extended(self._dict.keys(), index.start, index.stop, index.step))
+
+        else:
+            raise TypeError("Index must be an integer or slice.")
+
+
+class FrozenIndexSet(FrozenOrderedSet[T_cov]):
+    """A frozen set class that preserves insertion order and allows indexing."""
+
+    def __getitem__(self, index: int | slice) -> T_cov | list[T_cov]:
+        """Return the element at *index* or a list of elements for a slice."""
+
+        if isinstance(index, int):
+            if index < 0:
+                index = len(self) + index
+
+            if index >= len(self) or index < 0:
+                raise IndexError("Index out of range.")
+
+            from itertools import islice
+            return next(islice(self._dict.keys(), index, index + 1))
+
+        elif isinstance(index, slice):
+            from more_itertools import islice_extended
+            return list(
+                islice_extended(self._dict.keys(), index.start, index.stop, index.step))
+
+        else:
+            raise TypeError("Index must be an integer or slice.")
