@@ -306,29 +306,29 @@ class FrozenOrderedSet(AbstractSet[T_cov]):
 
     def copy(self) -> FrozenOrderedSet[T_cov]:
         """Return a shallow copy of this set."""
-        return FrozenOrderedSet(self._dict)
+        return self.__class__(self._dict)
 
     def difference(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the difference of this set and *others*."""
         if not others:
-            return FrozenOrderedSet(self._dict)
+            return self.__class__(self._dict)
         other_elems = set.union(*map(set, others))
         items = [item for item in self._dict if item not in other_elems]
-        return FrozenOrderedSet(items)
+        return self.__class__(items)
 
     def intersection(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the intersection of this set and *others*."""
         if not others:
-            return FrozenOrderedSet(self._dict)
+            return self.__class__(self._dict)
 
         oth = set(self).intersection(*others)
         result_elements = [element for element in self._dict if element in oth]
 
-        return FrozenOrderedSet(result_elements)
+        return self.__class__(result_elements)
 
     def symmetric_difference(self, s: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the symmetric difference of this set and *s*."""
-        return FrozenOrderedSet(
+        return self.__class__(
             dict.fromkeys([e for e in self._dict if e not in s]
                           + [e for e in s if e not in self._dict]))
 
@@ -346,7 +346,7 @@ class FrozenOrderedSet(AbstractSet[T_cov]):
 
     def union(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the union of this set and *others*."""
-        return FrozenOrderedSet(list(self._dict)
+        return self.__class__(list(self._dict)
                                 + [e for other in others for e in other])
 
     def __and__(self, s: Set[T_cov]) -> FrozenOrderedSet[T_cov]:
