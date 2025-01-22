@@ -49,8 +49,8 @@ class _NotProvided:
 class OrderedSet(AbstractSet[T]):
     """A set class that preserves insertion order.
 
-    It can be used as a drop-in replacement for :class:`set` where ordering is
-    desired.
+    It implements the same API as :class:`set` and can be used as a drop-in
+    replacement for that class when ordering is desired.
     """
 
     def __init__(self, items: Iterable[T] | type[_NotProvided] = _NotProvided)\
@@ -71,9 +71,10 @@ class OrderedSet(AbstractSet[T]):
 
     def __repr__(self) -> str:
         """Return a string representation of this set."""
+        cls_name = self.__class__.__name__
         if len(self) == 0:
-            return "OrderedSet()"
-        return "OrderedSet({" + ", ".join([repr(k) for k in self._dict]) + "})"
+            return f"{cls_name}()"
+        return f"{cls_name}({{" + ", ".join([repr(k) for k in self._dict]) + "})"
 
     def add(self, element: T) -> None:
         """Add *element* to this set."""
@@ -85,15 +86,15 @@ class OrderedSet(AbstractSet[T]):
 
     def copy(self) -> OrderedSet[T]:
         """Return a shallow copy of this set."""
-        return OrderedSet(self._dict.copy())
+        return self.__class__(self._dict.copy())
 
     def difference(self, *others: Iterable[T]) -> OrderedSet[T]:
         """Return all elements that are in this set but not in *others*."""
         if not others:
-            return OrderedSet(self._dict)
+            return self.__class__(self._dict)
         other_elems = set.union(*map(set, others))
         items = [item for item in self._dict if item not in other_elems]
-        return OrderedSet(items)
+        return self.__class__(items)
 
     def difference_update(self, *others: Iterable[T]) -> None:
         """Update this set to remove all items that are in *others*."""
@@ -111,12 +112,12 @@ class OrderedSet(AbstractSet[T]):
     def intersection(self, *others: Iterable[T]) -> OrderedSet[T]:
         """Return a new set with elements common to this set and all *others*."""
         if not others:
-            return OrderedSet(self._dict)
+            return self.__class__(self._dict)
 
         oth = set(self).intersection(*others)
         result_elements = [element for element in self._dict if element in oth]
 
-        return OrderedSet(result_elements)
+        return self.__class__(result_elements)
 
     def intersection_update(self, *others: Iterable[T]) -> None:
         """Update this set to be the intersection of itself and *others*."""
@@ -151,7 +152,7 @@ class OrderedSet(AbstractSet[T]):
 
     def symmetric_difference(self, s: Iterable[T]) -> OrderedSet[T]:
         """Return the symmetric difference of this set and *s*."""
-        return OrderedSet(
+        return self.__class__(
             dict.fromkeys([e for e in self._dict if e not in s]
                           + [e for e in s if e not in self._dict]))
 
@@ -161,7 +162,7 @@ class OrderedSet(AbstractSet[T]):
 
     def union(self, *others: Iterable[T]) -> OrderedSet[T]:
         """Return a new set with elements from this set and *others*."""
-        return OrderedSet(list(self._dict)
+        return self.__class__(list(self._dict)
                           + [e for other in others for e in other])
 
     def update(self, *others: Iterable[T]) -> None:
@@ -240,8 +241,8 @@ class OrderedSet(AbstractSet[T]):
 class FrozenOrderedSet(AbstractSet[T_cov]):
     """A frozen set class that preserves insertion order.
 
-    It can be used as a drop-in replacement for :class:`frozenset` where
-    ordering is desired.
+    It implements the same API as :class:`frozenset` and can be used as a
+    drop-in replacement for that class when ordering is desired.
     """
 
     def __init__(self, items: Iterable[T_cov] | type[_NotProvided] = _NotProvided)\
@@ -266,10 +267,16 @@ class FrozenOrderedSet(AbstractSet[T_cov]):
         return (self.__class__, (self._dict,))
 
     def __hash__(self) -> int:
-        """Return a hash of this set."""
+        """Return a hash of this set.
+
+        The hash has the same value as a :class:`frozenset` with the same
+        elements, and it is cached after the first call.
+        """
         if self._my_hash is not None:
             return self._my_hash
 
+        # This needs to use the same hashing algorithm as frozenset.
+        # Converting to a frozenset is the safest and fastest way to do that.
         self._my_hash = hash(frozenset(self))
         return self._my_hash
 
@@ -281,9 +288,10 @@ class FrozenOrderedSet(AbstractSet[T_cov]):
 
     def __repr__(self) -> str:
         """Return a string representation of this set."""
+        cls_name = self.__class__.__name__
         if len(self) == 0:
-            return "FrozenOrderedSet()"
-        return "FrozenOrderedSet({" + ", ".join([repr(k) for k in self._dict]) + "})"
+            return f"{cls_name}()"
+        return f"{cls_name}({{" + ", ".join([repr(k) for k in self._dict]) + "})"
 
     def __len__(self) -> int:
         """Return the number of elements in this set."""
@@ -299,29 +307,29 @@ class FrozenOrderedSet(AbstractSet[T_cov]):
 
     def copy(self) -> FrozenOrderedSet[T_cov]:
         """Return a shallow copy of this set."""
-        return FrozenOrderedSet(self._dict)
+        return self.__class__(self._dict)
 
     def difference(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the difference of this set and *others*."""
         if not others:
-            return FrozenOrderedSet(self._dict)
+            return self.__class__(self._dict)
         other_elems = set.union(*map(set, others))
         items = [item for item in self._dict if item not in other_elems]
-        return FrozenOrderedSet(items)
+        return self.__class__(items)
 
     def intersection(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the intersection of this set and *others*."""
         if not others:
-            return FrozenOrderedSet(self._dict)
+            return self.__class__(self._dict)
 
         oth = set(self).intersection(*others)
         result_elements = [element for element in self._dict if element in oth]
 
-        return FrozenOrderedSet(result_elements)
+        return self.__class__(result_elements)
 
     def symmetric_difference(self, s: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the symmetric difference of this set and *s*."""
-        return FrozenOrderedSet(
+        return self.__class__(
             dict.fromkeys([e for e in self._dict if e not in s]
                           + [e for e in s if e not in self._dict]))
 
@@ -339,7 +347,7 @@ class FrozenOrderedSet(AbstractSet[T_cov]):
 
     def union(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
         """Return the union of this set and *others*."""
-        return FrozenOrderedSet(list(self._dict)
+        return self.__class__(list(self._dict)
                                 + [e for other in others for e in other])
 
     def __and__(self, s: Set[T_cov]) -> FrozenOrderedSet[T_cov]:
