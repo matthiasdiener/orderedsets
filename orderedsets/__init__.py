@@ -372,7 +372,6 @@ class IndexSet(OrderedSet[T]):
 
     def __getitem__(self, index: int | slice) -> T | list[T]:
         """Return the element at *index* or a list of elements for a slice."""
-
         if isinstance(index, int):
             if index < 0:
                 index = len(self) + index
@@ -397,7 +396,6 @@ class FrozenIndexSet(FrozenOrderedSet[T_cov]):
 
     def __getitem__(self, index: int | slice) -> T_cov | list[T_cov]:
         """Return the element at *index* or a list of elements for a slice."""
-
         if isinstance(index, int):
             if index < 0:
                 index = len(self) + index

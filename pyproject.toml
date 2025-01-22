@@ -25,8 +25,9 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/matthiasdiener/orderedsets/"
-"Bug Tracker" = "https://github.com/matthiasdiener/orderedsets/issues"
+Homepage = "https://github.com/matthiasdiener/orderedsets/"
+Documentation = "https://matthiasdiener.github.io/orderedsets"
+Issues = "https://github.com/matthiasdiener/orderedsets/issues"
 
 [tool.ruff]
 preview = true
