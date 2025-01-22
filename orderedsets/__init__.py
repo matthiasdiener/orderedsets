@@ -231,9 +231,11 @@ class FrozenOrderedSet(Set[T_cov]):
         return (self.__class__, (self._dict,))
 
     def __hash__(self) -> int:
-        """Return a hash of this set. The hash has the same value as a
-        :class:`frozenset` with the same elements, and it is cached after the
-        first call."""
+        """Return a hash of this set.
+
+        The hash has the same value as a :class:`frozenset` with the same
+        elements, and it is cached after the first call.
+        """
         if self._my_hash is not None:
             return self._my_hash
 
