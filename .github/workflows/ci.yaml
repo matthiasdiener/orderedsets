@@ -148,6 +148,7 @@ jobs:
         git clone https://github.com/illinois-ceesd/emirge
         cd emirge
         ./install.sh
+        source config/activate.sh
 
         cd $DOWNSTREAM_PROJECT
 
