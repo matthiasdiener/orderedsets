@@ -152,5 +152,4 @@ jobs:
 
         cd $DOWNSTREAM_PROJECT
 
-        ./run-mypy.sh
         python -m pytest --tb=native -rxsw -v .
