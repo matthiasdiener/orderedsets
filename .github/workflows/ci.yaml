@@ -147,7 +147,7 @@ jobs:
         cd emirge
         ./install.sh
         source config/activate_env.sh
-        cd ..
+        cd ../orderedsets
         pip install -e .  # install orderedsets
 
         cd emirge/$DOWNSTREAM_PROJECT
