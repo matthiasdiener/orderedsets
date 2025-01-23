@@ -128,12 +128,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
     - name: "Main Script"
       env:
         DOWNSTREAM_PROJECT: ${{ matrix.downstream_project }}
       run: |
         set -x
-        curl -L -O https://tiker.net/ci-support-v0
-        source ./ci-support-v0
 
-        test_downstream "$DOWNSTREAM_PROJECT"
+        python -m pip install -e .
+
+        cd ..
+
+        git clone https://github.com/inducer/$DOWNSTREAM_PROJECT
+
+        cd $DOWNSTREAM_PROJECT
+
+        python -m pip install -e .
+
+        ./run-mypy.sh
+        python -m pytest --tb=native -rxsw -v .
