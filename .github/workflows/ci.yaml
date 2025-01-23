@@ -141,16 +141,17 @@ jobs:
         [[ $(uname) == Linux ]] && sudo apt-get update && sudo apt-get install -y openmpi-bin libopenmpi-dev libegl1
         [[ $(uname) == Darwin ]] && brew install openmpi
 
-        python -m pip install -e .
-
         cd ..
 
         git clone https://github.com/illinois-ceesd/emirge
         cd emirge
         ./install.sh
         source config/activate_env.sh
+        cd ..
+        pip install -e .  # install orderedsets
 
-        cd $DOWNSTREAM_PROJECT
+        cd emirge/$DOWNSTREAM_PROJECT
+
         git checkout main
 
         python -m pytest --tb=native -rxsw -v .
