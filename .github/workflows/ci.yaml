@@ -142,12 +142,11 @@ jobs:
 
         cd ..
 
-        git clone https://github.com/inducer/$DOWNSTREAM_PROJECT
+        git clone https://github.com/illinois-ceesd/emirge
+        cd emirge
+        ./install.sh
 
         cd $DOWNSTREAM_PROJECT
 
-        python -m pip install -e .
-
-        python -m pip install mypy pytest
         ./run-mypy.sh
         python -m pytest --tb=native -rxsw -v .
