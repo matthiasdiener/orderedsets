@@ -138,8 +138,8 @@ jobs:
       run: |
         set -x
 
-        [[ $(uname) == Linux ]] && sudo apt-get update && sudo apt-get install -y openmpi-bin libopenmpi-dev libegl1
-        [[ $(uname) == Darwin ]] && brew install openmpi
+        [[ $(uname) == Linux ]] && sudo apt-get update && sudo apt-get install -y openmpi-bin libopenmpi-dev libegl1 graphviz
+        [[ $(uname) == Darwin ]] && brew install openmpi graphviz
 
         cd ..
 
