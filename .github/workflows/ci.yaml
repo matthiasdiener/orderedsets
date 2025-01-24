@@ -96,7 +96,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
-        os: [ubuntu-22.04, macos-13]
+        os: [ubuntu-22.04, macos-13]  # need these older versions for Py3.7
       fail-fast: false
 
     steps:
@@ -118,3 +118,40 @@ jobs:
         python -m pip install stableset orderedset
         cd examples
         python speed.py
+
+
+  downstream_tests:
+    strategy:
+      matrix:
+          downstream_project: [pytato]
+    name: Tests for downstream project ${{ matrix.downstream_project }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+    - name: "Main Script"
+      env:
+        DOWNSTREAM_PROJECT: ${{ matrix.downstream_project }}
+      run: |
+        set -x
+
+        [[ $(uname) == Linux ]] && sudo apt-get update && sudo apt-get install -y openmpi-bin libopenmpi-dev libegl1 graphviz
+        [[ $(uname) == Darwin ]] && brew install openmpi graphviz
+
+        cd ..
+
+        git clone https://github.com/illinois-ceesd/emirge
+        cd emirge
+        ./install.sh
+        source config/activate_env.sh
+        cd ../orderedsets
+        pip install -e .  # install orderedsets
+
+        cd ../emirge/$DOWNSTREAM_PROJECT
+
+        git checkout main
+
+        python -m pytest --tb=native -rxsw -v .
