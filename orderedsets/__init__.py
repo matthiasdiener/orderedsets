@@ -36,7 +36,7 @@ except ModuleNotFoundError:  # pragma: no cover
 __version__ = importlib_metadata.version(__package__ or __name__)
 
 from collections.abc import Iterable, Iterator, Set
-from typing import AbstractSet, Any, Hashable, TypeVar
+from typing import AbstractSet, Any, Hashable, Literal, TypeVar
 
 T = TypeVar("T", bound=Hashable)
 T_cov = TypeVar("T_cov", covariant=True, bound=Hashable)
@@ -382,6 +382,59 @@ class FrozenOrderedSet(AbstractSet[T_cov]):
     def __xor__(self, s: Set[Any]) -> FrozenOrderedSet[T_cov]:
         """Return the symmetric difference of this set and *s*."""
         return self.symmetric_difference(s)
+
+    def mutate(self) -> FrozenOrderedSetMutation[T_cov]:
+        """Return a mutable version of this set."""
+        return FrozenOrderedSetMutation(self)
+
+
+class FrozenOrderedSetMutation(OrderedSet[T]):
+    """A mutable set that can be converted back to a
+    :class:`FrozenOrderedSet` without copying. This class behaves exactly like a
+    :class:`set`, except for one additional method mentioned below.
+
+    Additional method compared to :class:`set`:
+
+    .. automethod:: finish
+
+    It can also be used as a context manager:
+
+    .. doctest::
+        >>> set_init = FrozenOrderedSet([1, 2])
+        >>> with set_init.mutate() as set_mut:
+        ...     set_mut.add(3)
+        ...     set_mut.remove(1)
+        ...     set_new = set_mut.finish()
+        >>> set_new
+        FrozenOrderedSet({2, 3})
+        >>> set_init  # remains unchanged
+        FrozenOrderedSet({1, 2})
+    """
+
+    def __enter__(self) -> FrozenOrderedSetMutation[T]:
+        return self
+
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> Literal[False]:
+        return False
+
+    def finish(self) -> FrozenOrderedSet[T_cov]:
+        """Convert this object to an immutable version of
+        :class:`FrozenOrderedSetMutation`.
+
+        .. doctest::
+            >>> set_init = FrozenOrderedSet([1, 2])
+            >>> set_mut = set_init.mutate()
+            >>> set_mut.add(3)
+            >>> set_mut.remove(1)
+            >>> set_new = set_mut.finish()
+            >>> set_new
+            FrozenOrderedSet({2, 3})
+            >>> set_init  # remains unchanged
+            FrozenOrderedSet({1, 2})
+        """
+        self.__class__ = FrozenOrderedSet  # type: ignore[assignment]
+        return self  # type: ignore[return-value]
+
 
 
 class IndexSet(OrderedSet[T]):
