@@ -434,33 +434,5 @@ class FrozenIndexSet(FrozenOrderedSet[T_cov]):
     .. automethod:: __getitem__
     """
 
-    def __getitem__(self, index: int | slice) -> T_cov | list[T_cov]:
-        """Return the element at *index* or a list of elements for a slice.
-
-        .. doctest::
-
-            >>> fiset = FrozenIndexSet(["a", "b", "c", "d", "e", "f", "g", "h", "i"])
-            >>> fiset[0]
-            'a'
-            >>> fiset[-1]
-            'i'
-            >>> fiset[-2:-8:-2]
-            ['h', 'f', 'd']
-        """
-        if isinstance(index, int):
-            if index < 0:
-                index = len(self) + index
-
-            if index >= len(self) or index < 0:
-                raise IndexError("Index out of range.")
-
-            from itertools import islice
-            return next(islice(self._dict.keys(), index, index + 1))
-
-        elif isinstance(index, slice):
-            from more_itertools import islice_extended
-            return list(
-                islice_extended(self._dict.keys(), index.start, index.stop, index.step))
-
-        else:
-            raise TypeError("Index must be an integer or slice.")
+    # Can't derive from IndexSet because that would add the mutating methods
+    __getitem__ = IndexSet.__getitem__
