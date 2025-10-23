@@ -7,6 +7,14 @@ _conf_url = \
 with urlopen(_conf_url) as _inf:
     exec(compile(_inf.read(), _conf_url, "exec"), globals())
 
+old_linkcode_resolve = linkcode_resolve  # noqa: F821 (linkcode_resolve comes from the URL above)
+
+
+def linkcode_resolve(*args, **kwargs):
+    linkcode_url = "https://github.com/matthiasdiener/orderedsets/blob/main/{filepath}#L{linestart}-L{linestop}"
+    return old_linkcode_resolve(*args, **kwargs, linkcode_url=linkcode_url)
+
+
 project = "orderedsets"
 copyright = "2023, University of Illinois Board of Trustees"
 author = "Orderedsets contributors"
