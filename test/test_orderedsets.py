@@ -28,14 +28,14 @@ from typing import AbstractSet, Any, FrozenSet, Generator, Set, Type, TypeVar, U
 
 import pytest
 
-from orderedsets import FrozenOrderedSet, OrderedSet
+from orderedsets import FrozenIndexSet, FrozenOrderedSet, IndexSet, OrderedSet
 
 T = TypeVar("T")
 
-set_types = (OrderedSet, FrozenOrderedSet, set, frozenset)
-ordered_set_types = (OrderedSet, FrozenOrderedSet)
-mutable_set_types = (OrderedSet, set)
-immutable_set_types = (FrozenOrderedSet, frozenset)
+set_types = (OrderedSet, FrozenOrderedSet, set, frozenset, IndexSet, FrozenIndexSet)
+ordered_set_types = (OrderedSet, FrozenOrderedSet, IndexSet, FrozenIndexSet)
+mutable_set_types = (OrderedSet, set, IndexSet)
+immutable_set_types = (FrozenOrderedSet, frozenset, FrozenIndexSet)
 
 T_set = Union[Type[OrderedSet[T]], Type[FrozenOrderedSet[T]],
               Type[Set[T]], Type[FrozenSet[T]]]
