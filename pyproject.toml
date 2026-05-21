@@ -48,6 +48,11 @@ extend-select = [
     "W",   # pycodestyle
 ]
 
+extend-ignore = [
+  "S102", # use of exec
+  "RUF067", # `__init__` module should only contain docstrings and re-export
+]
+
 [tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 inline-quotes = "double"
