@@ -49,7 +49,7 @@ extend-select = [
 ]
 
 extend-ignore = [
-  "S102", # use of exec
+  "S102",   # use of exec
   "RUF067", # `__init__` module should only contain docstrings and re-export
 ]
 
