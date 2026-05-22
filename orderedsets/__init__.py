@@ -43,10 +43,11 @@ from collections.abc import (
 )
 from typing import Any, TypeVar
 
-if sys.version_info >= (3, 9):
-    from collections.abc import MutableSet, Set  # noqa: PYI025  # pragma: no cover
-else:  
-    from typing import MutableSet, AbstractSet as Set  # pragma: no cover
+if sys.version_info >= (3, 9):  # pragma: no cover
+    from collections.abc import MutableSet, Set  # noqa: PYI025
+else:  # pragma: no cover
+    from typing import AbstractSet as Set
+    from typing import MutableSet
 
 T = TypeVar("T", bound=Hashable)
 T_co = TypeVar("T_co", covariant=True, bound=Hashable)
