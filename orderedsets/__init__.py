@@ -35,8 +35,19 @@ except ModuleNotFoundError:  # pragma: no cover
 
 __version__ = importlib_metadata.version(__package__ or __name__)
 
-from collections.abc import Iterable, Iterator, Set  # noqa: PYI025
-from typing import AbstractSet, Any, Hashable, TypeVar
+import sys
+from collections.abc import (
+    Hashable,
+    Iterable,
+    Iterator,
+)
+from typing import Any, TypeVar
+
+if sys.version_info >= (3, 9):  # pragma: no cover
+    from collections.abc import MutableSet, Set  # noqa: PYI025
+else:  # pragma: no cover
+    from typing import AbstractSet as Set
+    from typing import MutableSet
 
 T = TypeVar("T", bound=Hashable)
 T_co = TypeVar("T_co", covariant=True, bound=Hashable)
@@ -46,7 +57,7 @@ class _NotProvided:
     pass
 
 
-class OrderedSet(AbstractSet[T]):
+class OrderedSet(MutableSet[T]):
     """A set class that preserves insertion order.
 
     It implements exactly the same API as :class:`set` and can be used as a drop-in
@@ -247,7 +258,7 @@ class OrderedSet(AbstractSet[T]):
         return len(self) > len(s) and set(self) > set(s)
 
 
-class FrozenOrderedSet(AbstractSet[T_co]):
+class FrozenOrderedSet(Set[T_co]):
     """A frozen set class that preserves insertion order.
 
     It implements exactly the same API as :class:`frozenset` and can be used as a
