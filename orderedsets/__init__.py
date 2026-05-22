@@ -35,11 +35,21 @@ except ModuleNotFoundError:  # pragma: no cover
 
 __version__ = importlib_metadata.version(__package__ or __name__)
 
-from collections.abc import Hashable, Iterable, Iterator, MutableSet, Set
+import sys
+from collections.abc import (
+    Hashable,
+    Iterable,
+    Iterator,
+)
 from typing import Any, TypeVar
 
+if sys.version_info >= (3, 9):
+    from collections.abc import MutableSet, Set  # noqa: PYI025  # pragma: no cover
+else:  
+    from typing import MutableSet, AbstractSet as Set  # pragma: no cover
+
 T = TypeVar("T", bound=Hashable)
-T_cov = TypeVar("T_cov", covariant=True, bound=Hashable)
+T_co = TypeVar("T_co", covariant=True, bound=Hashable)
 
 
 class _NotProvided:
@@ -247,7 +257,7 @@ class OrderedSet(MutableSet[T]):
         return len(self) > len(s) and set(self) > set(s)
 
 
-class FrozenOrderedSet(Set[T_cov]):
+class FrozenOrderedSet(Set[T_co]):
     """A frozen set class that preserves insertion order.
 
     It implements exactly the same API as :class:`frozenset` and can be used as a
@@ -262,7 +272,7 @@ class FrozenOrderedSet(Set[T_cov]):
         True
     """
 
-    def __init__(self, items: Iterable[T_cov] | type[_NotProvided] = _NotProvided)\
+    def __init__(self, items: Iterable[T_co] | type[_NotProvided] = _NotProvided)\
             -> None:
         """Create a new :class:`FrozenOrderedSet`, optionally initialized \
             with *items*."""
@@ -318,15 +328,15 @@ class FrozenOrderedSet(Set[T_cov]):
         """Return whether *o* is in this set."""
         return o in self._dict
 
-    def __iter__(self) -> Iterator[T_cov]:
+    def __iter__(self) -> Iterator[T_co]:
         """Return an iterator over the elements of this set."""
         return iter(self._dict)
 
-    def copy(self) -> FrozenOrderedSet[T_cov]:
+    def copy(self) -> FrozenOrderedSet[T_co]:
         """Return a shallow copy of this set."""
         return self.__class__(self._dict)
 
-    def difference(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
+    def difference(self, *others: Iterable[T_co]) -> FrozenOrderedSet[T_co]:
         """Return the difference of this set and *others*."""
         if not others:
             return self.__class__(self._dict)
@@ -334,7 +344,7 @@ class FrozenOrderedSet(Set[T_cov]):
         items = [item for item in self._dict if item not in other_elems]
         return self.__class__(items)
 
-    def intersection(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
+    def intersection(self, *others: Iterable[T_co]) -> FrozenOrderedSet[T_co]:
         """Return the intersection of this set and *others*."""
         if not others:
             return self.__class__(self._dict)
@@ -344,42 +354,42 @@ class FrozenOrderedSet(Set[T_cov]):
 
         return self.__class__(result_elements)
 
-    def symmetric_difference(self, s: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
+    def symmetric_difference(self, s: Iterable[T_co]) -> FrozenOrderedSet[T_co]:
         """Return the symmetric difference of this set and *s*."""
         return self.__class__(
             dict.fromkeys([e for e in self._dict if e not in s]
                           + [e for e in s if e not in self._dict]))
 
-    def isdisjoint(self, s: Iterable[T_cov]) -> bool:
+    def isdisjoint(self, s: Iterable[T_co]) -> bool:
         """Return whether this set is disjoint with *s*."""
         return self._dict.keys().isdisjoint(s)  # pylint: disable=no-member
 
-    def issubset(self, s: Iterable[T_cov]) -> bool:
+    def issubset(self, s: Iterable[T_co]) -> bool:
         """Return whether this set is a subset of *s*."""
         return all(i in s for i in self)
 
-    def issuperset(self, s: Iterable[T_cov]) -> bool:
+    def issuperset(self, s: Iterable[T_co]) -> bool:
         """Return whether this set is a superset of *s*."""
         return set(self).issuperset(set(s))
 
-    def union(self, *others: Iterable[T_cov]) -> FrozenOrderedSet[T_cov]:
+    def union(self, *others: Iterable[T_co]) -> FrozenOrderedSet[T_co]:
         """Return the union of this set and *others*."""
         return self.__class__(list(self._dict)
                                 + [e for other in others for e in other])
 
-    def __and__(self, s: Set[T_cov]) -> FrozenOrderedSet[T_cov]:
+    def __and__(self, s: Set[T_co]) -> FrozenOrderedSet[T_co]:
         """Return the intersection of this set and *s*."""
         return self.intersection(s)
 
-    def __or__(self, s: Set[Any]) -> FrozenOrderedSet[T_cov]:
+    def __or__(self, s: Set[Any]) -> FrozenOrderedSet[T_co]:
         """Return the union of this set and *s*."""
         return self.union(s)
 
-    def __sub__(self, s: Set[T_cov]) -> FrozenOrderedSet[T_cov]:
+    def __sub__(self, s: Set[T_co]) -> FrozenOrderedSet[T_co]:
         """Return the difference of this set and *s*."""
         return self.difference(s)
 
-    def __xor__(self, s: Set[Any]) -> FrozenOrderedSet[T_cov]:
+    def __xor__(self, s: Set[Any]) -> FrozenOrderedSet[T_co]:
         """Return the symmetric difference of this set and *s*."""
         return self.symmetric_difference(s)
 
@@ -425,7 +435,7 @@ class IndexSet(OrderedSet[T]):
             raise TypeError("Index must be an integer or slice.")
 
 
-class FrozenIndexSet(FrozenOrderedSet[T_cov]):
+class FrozenIndexSet(FrozenOrderedSet[T_co]):
     """A frozen set class that preserves insertion order and allows indexing.
 
     The only change in API from :class:`frozenset` is the addition of the
@@ -434,7 +444,7 @@ class FrozenIndexSet(FrozenOrderedSet[T_cov]):
     .. automethod:: __getitem__
     """
 
-    def __getitem__(self, index: int | slice) -> T_cov | list[T_cov]:
+    def __getitem__(self, index: int | slice) -> T_co | list[T_co]:
         """Return the element at *index* or a list of elements for a slice.
 
         .. doctest::

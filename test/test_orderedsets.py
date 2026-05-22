@@ -365,6 +365,7 @@ def test_intersection_update_mutable(cls: T_mutable_set[str]) -> None:
 
     if cls in ordered_set_types:
         s3 = cls(["c", "a", "b"])
+        assert not isinstance(s3, FrozenOrderedSet)
         s3.intersection_update(["b", "a"])
         s3.intersection_update({"b", "a"})
         assert list(s3) == ["a", "b"]
@@ -786,7 +787,7 @@ def test_ordering(cls: T_set[int]) -> None:
 @all_ordered_set_types
 def test_isinstance(cls: T_ordered_set[int]) -> None:
     from collections.abc import MutableSet as abc_MutableSet
-    from collections.abc import Set as abc_Set
+    from collections.abc import Set as abc_Set  # noqa: PYI025
     assert isinstance(cls(), AbstractSet)
     assert not isinstance(cls(), Set)
     assert not isinstance(cls(), set)
