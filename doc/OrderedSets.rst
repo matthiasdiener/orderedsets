@@ -31,7 +31,7 @@ Type Variables
     :class:`~orderedsets.OrderedSet` and :class:`~orderedsets.IndexSet`.
     All items must be hashable.
 
-.. class:: orderedsets.T_cov
+.. class:: orderedsets.T_co
 
     A (covariant) type variable for items in a
     :class:`~orderedsets.FrozenOrderedSet` and :class:`~orderedsets.FrozenIndexSet`.
