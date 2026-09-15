@@ -6,13 +6,13 @@ import ordered_set  # type: ignore[import-not-found,unused-ignore]
 import orderedset  # type: ignore[import-not-found,unused-ignore]
 
 # https://github.com/idanmiara/ordered-set (pip install stableset), v5.2.1:
-from ordered_set import OrderedSet as list_set  # noqa: F401, N813
+from ordered_set import OrderedSet as list_set  # ruff: ignore[unused-import, camelcase-imported-as-lowercase]
 
 # https://github.com/simonpercivall/orderedset (pip install orderedset), v2.0.3:
-from orderedset import OrderedSet as cython_ordered_set  # noqa: F401, N813
+from orderedset import OrderedSet as cython_ordered_set  # ruff: ignore[unused-import, camelcase-imported-as-lowercase]
 
 import orderedsets
-from orderedsets import FrozenOrderedSet, OrderedSet  # noqa: F401
+from orderedsets import FrozenOrderedSet, OrderedSet  # ruff: ignore[unused-import]
 
 print(f"Versions:\norderedsets={orderedsets.__version__},\n"
       f"orderedset={orderedset.__version__},\n"

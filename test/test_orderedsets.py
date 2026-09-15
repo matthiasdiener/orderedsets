@@ -63,7 +63,7 @@ def f(s: AbstractSet[T]) -> AbstractSet[T]:
     return s
 
 
-def test_no_PYTHONHASHSEED() -> None:  # noqa: N802
+def test_no_PYTHONHASHSEED() -> None:  # ruff: ignore[invalid-function-name]
     import os
     if "PYTHONHASHSEED" in os.environ:
         val = os.environ["PYTHONHASHSEED"]
@@ -165,7 +165,7 @@ def test_in(cls: T_set[str]) -> None:
 def test_eq(cls: T_set[str]) -> None:
     s1 = cls(["d", "a", "d", "a"])
     s2 = cls(["d", "d", "a"])
-    s3 = set(["d", "a", "d", "a"])  # noqa: C405
+    s3 = set(["d", "a", "d", "a"])  # ruff: ignore[unnecessary-literal-set]
     assert s1 == s2
     assert s1 == s3
     assert s2 == s1
@@ -787,7 +787,7 @@ def test_ordering(cls: T_set[int]) -> None:
 @all_ordered_set_types
 def test_isinstance(cls: T_ordered_set[int]) -> None:
     from collections.abc import MutableSet as abc_MutableSet
-    from collections.abc import Set as abc_Set  # noqa: PYI025
+    from collections.abc import Set as abc_Set  # ruff: ignore[unaliased-collections-abc-set-import]
     assert isinstance(cls(), AbstractSet)
     assert not isinstance(cls(), Set)
     assert not isinstance(cls(), set)
