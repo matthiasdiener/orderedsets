@@ -44,7 +44,7 @@ from collections.abc import (
 from typing import Any, TypeVar
 
 if sys.version_info >= (3, 9):  # pragma: no cover
-    from collections.abc import MutableSet, Set  # noqa: PYI025
+    from collections.abc import MutableSet, Set  # ruff: ignore[unaliased-collections-abc-set-import]
 else:  # pragma: no cover
     from typing import AbstractSet as Set
     from typing import MutableSet
