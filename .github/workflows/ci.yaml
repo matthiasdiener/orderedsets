@@ -134,30 +134,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v7
-      with:
-        python-version: 3.12
     - name: "Main Script"
       env:
         DOWNSTREAM_PROJECT: ${{ matrix.downstream_project }}
+        AK_PROJ_NAME: ${{ matrix.downstream_project }}
       run: |
-        set -x
-
-        [[ $(uname) == Linux ]] && sudo apt-get update && sudo apt-get install -y openmpi-bin libopenmpi-dev libegl1 graphviz
-        [[ $(uname) == Darwin ]] && brew install openmpi graphviz
-
         cd ..
+        git clone https://github.com/inducer/$DOWNSTREAM_PROJECT
+        cd $DOWNSTREAM_PROJECT
 
-        git clone https://github.com/illinois-ceesd/emirge
-        cd emirge
-        ./install.sh
-        source config/activate_env.sh
-        cd ../orderedsets
-        pip install -e .  # install orderedsets
+        curl -L -O https://tiker.net/ci-support-v0
+        . ./ci-support-v0
+        build_py_project_in_conda_env
 
-        cd ../emirge/$DOWNSTREAM_PROJECT
+        # Override the PyPI orderedsets pulled in by the downstream project
+        pip install -e ../orderedsets
 
-        git checkout main
-
-        python -m pytest --tb=native -rxsw -v .
+        test_py_project
